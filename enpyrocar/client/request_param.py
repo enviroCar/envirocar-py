@@ -13,9 +13,18 @@ class BboxSelector:
     def upper_right(self):
         return self.max_x, self.max_y
 
+    @property
+    def param(self):
+        return { 'bbox': f'{self.min_x},{self.min_y},{self.max_x},{self.max_y}' }
+
 class TimeSelector:
-    def __init__(self, time_interval):
-        pass
+    def __init__(self, start_time, end_time):
+        self.start_time = start_time
+        self.end_time = end_time
+
+    @property
+    def param(self):
+        return {} # TODO
 
 class RequestParam:
     def __init__(self, path: str, method="GET", headers=None, params=None):

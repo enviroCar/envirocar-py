@@ -2,6 +2,7 @@ import logging
 import requests 
 import warnings
 import concurrent.futures
+import json
 from urllib.parse import urljoin
 
 from .client_config import ECConfig
@@ -19,9 +20,8 @@ class DownloadClient:
     def request(self, download_requests):
         pass
 
-    def download(self, download_requests, max_workers=None):
-        
-        if isinstance(download_requests, RequestParam):
+    def download(self, download_requests, decoder=None, max_workers=None):
+        if (isinstance(download_requests, RequestParam)):
             download_requests = [download_requests]
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
@@ -30,11 +30,14 @@ class DownloadClient:
         result_list = []
         for future in download_list:
             try:
-                result_list.append(future.result())
+                decoded_data = future.result().decode('utf-8')
+                result_list.append(decoded_data)
             except HttpFailedException as e:
                 warnings.warn(str(e))
                 result_list.append(None)
 
+        if decoder:
+            return decoder(result_list)
         return result_list
 
     @handle_error_status

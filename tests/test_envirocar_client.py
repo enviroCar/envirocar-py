@@ -1,4 +1,5 @@
 import unittest
+import geopandas as gpd
 
 from enpyrocar.client.client_config import ECConfig
 from enpyrocar.client.download_client import DownloadClient
