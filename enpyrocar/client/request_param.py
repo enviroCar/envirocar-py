@@ -24,7 +24,7 @@ class TimeSelector:
 
     @property
     def param(self):
-        return {} # TODO
+        return { 'after': f'{self.start_time}' } # TODO
 
 class RequestParam:
     def __init__(self, path: str, method="GET", headers=None, params=None):

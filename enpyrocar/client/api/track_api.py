@@ -13,21 +13,32 @@ class TrackAPI():
     def __init__(self, api_client=None):
         self.api_client = api_client or DownloadClient()
 
-    def get_tracks(self, username=None, bbox:BboxSelector=None, time_interval:TimeSelector=None, num_results=100, page_limit=4):
+    def get_tracks(self, username=None, bbox:BboxSelector=None, time_interval:TimeSelector=None, num_results=10, page_limit=100):
         path = self._get_path(username=username)
 
-        # creating get paramters
-        params = {
-            'limit': page_limit
-        }
-        if bbox:
-            params.update(bbox.param)
-        
-        # request for /tracks
-        request = RequestParam(path=path, params=params)
-        tracks_meta_df = self.api_client.download(request, decoder=_parse_tracks_list_df)
+        # creating download_requests
+        download_requests = []
+        current_results = 0
+        current_page = 1
+        while current_results < num_results:
+            request_params = {
+                'limit': page_limit,
+                'page': current_page
+            }
+            if bbox:
+                request_params.update(bbox.param)
 
-        ids = tracks_meta_df['id'].values
+            request = RequestParam(path=path, params=request_params)
+            download_requests.append(request)
+            
+            current_results += page_limit
+            current_page += 1
+
+        # request for /tracks
+        tracks_meta_df = self.api_client.download(download_requests, decoder=_parse_tracks_list_df)
+        tracks_meta_df = tracks_meta_df[:num_results]
+
+        ids = tracks_meta_df['track.id'].values
         tracks_df = self._get_tracks_by_ids(ids)
 
         return tracks_df

@@ -13,8 +13,8 @@ class TestDownloadClient(unittest.TestCase):
         self.track_api = TrackAPI(self.client)
 
     def test_download(self):
-        tracks = self.track_api.get_tracks()
-        print(tracks)
+        tracks = self.track_api.get_tracks(num_results=4, page_limit=3)
+        self.assertEqual(len(tracks['track.id'].unique()), 4)
 
 if __name__ == '__main__':
     unittest.main()
