@@ -1,4 +1,6 @@
 class BboxSelector:
+    """ Class for creating bounding box requests """
+
     def __init__(self, bbox: [float]):
         self.min_x = bbox[0]
         self.min_y = bbox[1]

@@ -6,6 +6,7 @@ from ..request_param import RequestParam, BboxSelector, TimeSelector
 from ..download_client import DownloadClient
 
 class TrackAPI():
+    """Handles the API access to the enviroCar backend and returns queried results as dataframes"""
     TRACKS_ENDPOINT = "tracks"
     TRACK_ENDPOINT = "tracks/{}"
     USERTRACKS_ENDPOINT = "users/{}/tracks"
@@ -14,6 +15,18 @@ class TrackAPI():
         self.api_client = api_client or DownloadClient()
 
     def get_tracks(self, username=None, bbox:BboxSelector=None, time_interval:TimeSelector=None, num_results=10, page_limit=100):
+        """Handles queries against the enviroCar api
+        
+        Keyword Arguments:
+            username {str} -- the username to request tracks for (default: {None})
+            bbox {BboxSelector} -- bbox query parameter (default: {None})
+            time_interval {TimeSelector} -- time interval query parameter (default: {None})
+            num_results {int} -- maximum number of tracks to request (default: {10})
+            page_limit {int} -- page limit (default: {100})
+        
+        Returns:
+            GeoDataFrame -- A GeoDataFrame containing the tracks matching the request parameters
+        """
         path = self._get_path(username=username)
 
         # creating download_requests
