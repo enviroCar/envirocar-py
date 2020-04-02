@@ -4,3 +4,5 @@ venv/
 **/*.egg-info/**
 *.ipynb_checkpoints/
 **/*.html
+dist/
+build/
