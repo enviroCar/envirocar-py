@@ -15,7 +15,6 @@ setup(
     name="enpyrocar",
     packages=find_packages(exclude=["tests", "tests.*"]),
     package_data={
-        # If any package contains *.txt files, include them:
         "": ["*.txt"]
     },
     include_package_data=True,

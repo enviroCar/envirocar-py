@@ -18,6 +18,10 @@ To install enpyrocar in develop mode, use the following:
 python setup.py develop
 ```
 
+## Examples
+Jupyter notebooks on how to use this package to request data from enviroCar API can be found in the examples folder:
+ * Download data and visualize with pydeck ([here](https://github.com/enviroCar/enpyrocar/blob/master/examples/api_request_deckgl.ipynb))
+
 ## License ##
     MIT License
 
