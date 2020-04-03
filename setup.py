@@ -1,3 +1,5 @@
+import io
+
 from pip._internal.req import parse_requirements
 from setuptools import setup, find_packages
 
@@ -5,13 +7,25 @@ from setuptools import setup, find_packages
 requirements = list(parse_requirements('requirements.txt', session='hack'))
 requirements = [r.name for r in requirements]
 
+
+def parse_long_description():
+    return io.open('README.md', encoding="utf-8").read()
+
 setup(
     name="enpyrocar",
     packages=find_packages(exclude=["tests", "tests.*"]),
-    version="0.1",
+    package_data={
+        # If any package contains *.txt files, include them:
+        "": ["*.txt"]
+    },
+    include_package_data=True,
+    version="0.0.2",
+    description="Python Utilities for enviroCar",
+    long_description=parse_long_description(),
+    long_description_content_type="text/markdown",
     license="MIT",
     url="https://github.com/enviroCar/enpyrocar",
-    keywords=["enviroCar", "trajectory"],
+    keywords=["enviroCar", "trajectory", "xFCD"],
     install_requires=requirements,
     test_suite="tests",
     classifiers=[
