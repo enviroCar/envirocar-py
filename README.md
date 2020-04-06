@@ -9,7 +9,7 @@ The package currently only supports querying track data. It is intended to furth
 The package requires a Python version >= 3.6. The package is available on the PyPI package manager and can be installed with the following command:
 
 ```
-python install enpyrocar --upgrade
+pip install enpyrocar --upgrade
 ```
 
 To install enpyrocar in develop mode, use the following:
