@@ -1,9 +1,9 @@
 import unittest
 import geopandas as gpd
 
-from enpyrocar.client.client_config import ECConfig
-from enpyrocar.client.download_client import DownloadClient
-from enpyrocar.client.api.track_api import TrackAPI
+from envirocar.client.client_config import ECConfig
+from envirocar.client.download_client import DownloadClient
+from envirocar.client.api.track_api import TrackAPI
 
 class TestDownloadClient(unittest.TestCase):
 

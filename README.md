@@ -1,6 +1,6 @@
-# enpyrocar
+# envirocar-py
 
-The enpyrocar Python package allows users to query and download trajectory data from the enviroCar API. The data will be stored in a flat GeoDataFrame from GeoPandas. The resulting dataframe consists of all measurements from the requested tracks including attached sensorinformation from the cars and further meta infromation about the track. 
+The enviroCar Python package allows users to query and download trajectory data from the enviroCar API. The data will be stored in a flat GeoDataFrame from GeoPandas. The resulting dataframe consists of all measurements from the requested tracks including attached sensorinformation from the cars and further meta infromation about the track. 
 
 The package currently only supports querying track data. It is intended to further expand these functionalities with additional analytics in the future.
 
@@ -9,10 +9,10 @@ The package currently only supports querying track data. It is intended to furth
 The package requires a Python version >= 3.6. The package is available on the PyPI package manager and can be installed with the following command:
 
 ```
-pip install enpyrocar --upgrade
+pip install envirocar-py --upgrade
 ```
 
-To install enpyrocar in develop mode, use the following:
+To install envirocar-py in develop mode, use the following:
 
 ```
 python setup.py develop
@@ -20,7 +20,7 @@ python setup.py develop
 
 ## Examples
 Jupyter notebooks on how to use this package to request data from enviroCar API can be found in the examples folder:
- * Download data and visualize with pydeck ([here](https://github.com/enviroCar/enpyrocar/blob/master/examples/api_request_deckgl.ipynb))
+ * Download data and visualize with pydeck ([here](https://github.com/enviroCar/envirocar-py/blob/master/examples/api_request_deckgl.ipynb))
 
 ## License ##
     MIT License

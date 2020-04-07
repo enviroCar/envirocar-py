@@ -1,6 +1,6 @@
 import unittest
 
-from enpyrocar.client.api.track_api import _parse_track_df, _parse_tracks_list_df
+from envirocar.client.api.track_api import _parse_track_df, _parse_tracks_list_df
 
 class TestDecoding(unittest.TestCase):
 

@@ -12,18 +12,18 @@ def parse_long_description():
     return io.open('README.md', encoding="utf-8").read()
 
 setup(
-    name="enpyrocar",
+    name="envirocar-py",
     packages=find_packages(exclude=["tests", "tests.*"]),
     package_data={
         "": ["*.txt"]
     },
     include_package_data=True,
-    version="0.0.2",
+    version="0.0.1",
     description="Python Utilities for enviroCar",
     long_description=parse_long_description(),
     long_description_content_type="text/markdown",
     license="MIT",
-    url="https://github.com/enviroCar/enpyrocar",
+    url="https://github.com/enviroCar/envirocar-py",
     keywords=["enviroCar", "trajectory", "xFCD"],
     install_requires=requirements,
     test_suite="tests",
