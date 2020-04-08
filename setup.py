@@ -18,7 +18,7 @@ setup(
         "": ["*.txt"]
     },
     include_package_data=True,
-    version="0.0.1",
+    version="0.0.2",
     description="Python Utilities for enviroCar",
     long_description=parse_long_description(),
     long_description_content_type="text/markdown",

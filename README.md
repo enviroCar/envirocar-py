@@ -1,6 +1,6 @@
 # envirocar-py
 
-The enviroCar Python package allows users to query and download trajectory data from the enviroCar API. The data will be stored in a flat GeoDataFrame from GeoPandas. The resulting dataframe consists of all measurements from the requested tracks including attached sensorinformation from the cars and further meta infromation about the track. 
+The enviroCar Python package allows users to query and download trajectory data from the enviroCar API. The data will be stored in a flat GeoDataFrame from GeoPandas. The resulting dataframe consists of all measurements from the requested tracks including measured sensor values from the cars and further metadata about the track. 
 
 The package currently only supports querying track data. It is intended to further expand these functionalities with additional analytics in the future.
 
