@@ -51,10 +51,12 @@ class TrackAPI():
         tracks_meta_df = self.api_client.download(download_requests, decoder=_parse_tracks_list_df)
         tracks_meta_df = tracks_meta_df[:num_results]
 
-        ids = tracks_meta_df['track.id'].values
-        tracks_df = self._get_tracks_by_ids(ids)
+        if not tracks_meta_df.empty: 
+            ids = tracks_meta_df['track.id'].values
+            tracks_df = self._get_tracks_by_ids(ids)
+            return tracks_df
 
-        return tracks_df
+        return gpd.GeoDataFrame()
 
     def get_track(self, track_id: str):
         return self.api_client.download(
@@ -79,10 +81,11 @@ def _parse_tracks_list_df(tracks_jsons):
 
     tracks_meta_df = pd.DataFrame()
     for tracks_json in tracks_jsons:
-        ec_data = json.loads(tracks_json)
-        df = pd.json_normalize(ec_data, 'tracks')
-        df.rename(columns=__rename_track_columns, inplace=True)
-        tracks_meta_df = tracks_meta_df.append(df)
+        if tracks_json:
+            ec_data = json.loads(tracks_json)
+            df = pd.json_normalize(ec_data, 'tracks')
+            df.rename(columns=__rename_track_columns, inplace=True)
+            tracks_meta_df = tracks_meta_df.append(df)
 
     return tracks_meta_df
 
