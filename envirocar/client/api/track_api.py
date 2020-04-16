@@ -83,7 +83,7 @@ def _parse_tracks_list_df(tracks_jsons):
     for tracks_json in tracks_jsons:
         if tracks_json:
             ec_data = json.loads(tracks_json)
-            df = pd.json_normalize(ec_data, 'tracks')
+            df = pd.io.json.json_normalize(ec_data, 'tracks')
             df.rename(columns=__rename_track_columns, inplace=True)
             tracks_meta_df = tracks_meta_df.append(df)
 
@@ -96,13 +96,13 @@ def _parse_track_df(track_jsons):
     tracks_df = gpd.GeoDataFrame()
     for track_json in track_jsons:
         # read properties
-        car_df = pd.json_normalize(json.loads(track_json)['properties'])
+        car_df = pd.io.json.json_normalize(json.loads(track_json)['properties'])
         car_df.columns = car_df.columns.str.replace('sensor.properties.', 'sensor.')
         car_df.rename(columns=__rename_track_columns, inplace=True)
 
         # read geojson values
         track_df = gpd.read_file(track_json)
-        track_df = track_df.join(pd.json_normalize(track_df['phenomenons'])).drop(['phenomenons'], axis=1)
+        track_df = track_df.join(pd.io.json.json_normalize(track_df['phenomenons'])).drop(['phenomenons'], axis=1)
         
         # combine dataframes
         car_df = pd.concat([car_df]*len(track_df.index), ignore_index=True)
