@@ -6,3 +6,5 @@ venv/
 **/*.html
 dist/
 build/
+
+.mypy_cache/
