@@ -40,6 +40,8 @@ class TrackAPI():
             }
             if bbox:
                 request_params.update(bbox.param)
+	    if time_interval:
+                request_params.update(time_interval.param)
 
             request = RequestParam(path=path, params=request_params)
             download_requests.append(request)
