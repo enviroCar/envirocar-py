@@ -28,6 +28,11 @@ You can now check whether the environment has been activated by checking the des
 which python
 ```
 
+Perform an update on pip.
+```
+pip install --upgrade pip
+```
+
 ## Install the required dependencies
 Install the python envoricar python package. This package will also install all necessary libraries such as Pandas or GeoPandas. 
 ```
