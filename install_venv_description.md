@@ -28,6 +28,11 @@ You can now check whether the environment has been activated by checking the des
 which python
 ```
 
+Perform an update on pip.
+```
+pip install --upgrade pip
+```
+
 ## Install the required dependencies
 Install the python envoricar python package. This package will also install all necessary libraries such as Pandas or GeoPandas. 
 ```
@@ -35,7 +40,7 @@ pip install envirocar-py --upgrade
 ```
 
 ## Installing Virtualenv as a Python Kernel (for Jupyter)
-Finally, add the virtualenv as a jupyter kernel. In this way you can use the installed dependencies in venv in your jupyter sessions.
+Finally, add the virtualenv as a Jupyter kernel. In this way you can use the installed dependencies in venv in your Jupyter sessions.
 ```
 ipython kernel install --user --name=envirocar
 ```
@@ -45,4 +50,6 @@ To ensure that the package is installed properly, the following command can be u
 jupyter kernelspec list
 ```
 
-Now you can start a jupyter notebook and select the created kernel `envirocar` as a new kernel for your jupyter notebooks. If you install any further dependencies, please make sure that you active this virtual environment before installing packages.
+Now you can start a Jupyter notebook and select the created kernel `envirocar` as a new kernel for your Jupyter notebooks. To manage this, open your Jupyter notebook and click on Kernel -> Change Kernel -> envirocar.
+
+Important: If you install any further dependencies, please make sure that you active this virtual environment before installing packages.
