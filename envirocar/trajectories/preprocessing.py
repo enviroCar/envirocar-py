@@ -6,11 +6,12 @@ import datetime
 
 class Preprocessing():
     def __init__(self):
-        print("Initializing pre-processing class")  # do we need anything here?
+        print("Initializing pre-processing class")   # do we need anything?
 
     def remove_outliers(self, points, column):
-        """ Remove outliers by using the statistical approach 
-        as described in https://www.itl.nist.gov/div898/handbook/prc/section1/prc16.htm
+        """ Remove outliers by using the statistical approach
+        as described in
+        https://www.itl.nist.gov/div898/handbook/prc/section1/prc16.htm
 
         Keyword Arguments:
             points {GeoDataFrame} -- A GeoDataFrame containing the track points
@@ -22,9 +23,9 @@ class Preprocessing():
 
         first_quartile = points[column].quantile(0.25)
         third_quartile = points[column].quantile(0.75)
-        iqr = third_quartile-first_quartile  # Interquartile range
-        fence_low = first_quartile-1.5*iqr
-        fence_high = third_quartile+1.5*iqr
+        iqr = third_quartile-first_quartile   # Interquartile range
+        fence_low = first_quartile - 1.5 * iqr
+        fence_high = third_quartile + 1.5 * iqr
 
         new_points = points.loc[(points[column] > fence_low) & (
             points[column] < fence_high)]
@@ -75,10 +76,12 @@ class Preprocessing():
 
         """ Interpolation itself """
         # Find the B-spline representation of the curve
-        # tck (t,c,k): is a tuple containing the vector of knots, the B-spline coefficients, and the degree of the spline.
+        # tck (t,c,k): is a tuple containing the vector of knots,
+        # the B-spline coefficients, and the degree of the spline.
         # u: is an array of the values of the parameter.
         tck, u = interpolate.splprep(
-            [input_coords_x, input_coords_y, input_time, input_co2, input_speed], s=0)
+            [input_coords_x, input_coords_y, input_time, input_co2,
+             input_speed], s=0)
         step = np.linspace(0, 1, input_time[-1] - input_time[0])
         # interpolating so many points to have a point for each second
         new_points = interpolate.splev(step, tck)
