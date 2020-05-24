@@ -99,3 +99,16 @@ class Preprocessing():
         interpolated_df.drop(['time_seconds'], axis=1)
 
         return interpolated_df
+
+    def aggregate(self, points_mp):
+
+        # TODO aggregation of points here
+
+        return 'Aggregation function was called. Substitute this string with aggregation result'
+
+    def cluster(self, points_mp):
+
+        # TODO clustering of points here
+
+        return 'Clustering function was called. Substitute this string with clustering result'
+        
