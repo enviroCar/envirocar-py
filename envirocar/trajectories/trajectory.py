@@ -35,6 +35,7 @@ class Trajectory():
     def get_position_at(self, t):
         try:
             return self.trajectory.loc[t]['geometry'][0]
-        except:
-            return self.trajectory.iloc[self.trajectory.index.drop_duplicates().get_loc(
-                t, method='nearest')]['geometry']
+        except Exception:
+            return self.trajectory.iloc[
+                self.trajectory.index.drop_duplicates().get_loc(
+                 t, method='nearest')]['geometry']
