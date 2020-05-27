@@ -1,8 +1,10 @@
 from scipy import interpolate
+from datetime import timedelta
 import pandas as pd
 import numpy as np
 import datetime
-
+import folium
+import movingpandas as mpd
 
 class Preprocessing():
     def __init__(self):
@@ -100,11 +102,40 @@ class Preprocessing():
 
         return interpolated_df
 
-    def aggregate(self, points_mp):
+    # Creating trajectiors from each unique set of points in dataframe
+    # Creats a Moving Pandas Trajectory Collection Object
+    def trajectoryCollection(self, data_df, MIN_LENGTH):
+        track_df = data_df
 
-        # TODO aggregation of points here
+        # adding a time field as 't' for moving pandas indexing
+        track_df['t'] = pd.to_datetime(track_df['time'], format='%Y-%m-%dT%H:%M:%S')
+        track_df = track_df.set_index('t')
 
-        return 'Aggregation function was called. Substitute this string with aggregation result'
+        # using moving pandas trajectory collection function to convert trajectory points into actual trajectories  
+        traj_collection = mpd.TrajectoryCollection(track_df, 'track.id', min_length=MIN_LENGTH)
+        print("Finished creating {} trajectories".format(len(traj_collection)))
+        return traj_collection
+
+    # Splitting Trajectories based on time gap between records to extract Trips
+    def split_by_gap (self, TRAJ_COLLECTION, MIN_GAP):
+        traj_collection = TRAJ_COLLECTION
+        
+        # using moving pandas function to split trajectories as 'trips'
+        trips = traj_collection.split_by_observation_gap(timedelta(minutes=MIN_GAP))
+        print("Extracted {} individual trips from {} continuous vehicle tracks".format(len(trips), len(traj_collection)))
+        return trips
+
+    # To Aggregate given Trips and get Aggregated Flows
+    def aggregate(self, TRIPS, MAX_DISTANCE, MIN_DISTANCE, MIN_STOP_DURATION ):
+        #%%time
+        trips = TRIPS
+
+        # using moving pandas function to Aggregate Trajectories
+        aggregator = mpd.TrajectoryCollectionAggregator(trips, max_distance=MAX_DISTANCE, min_distance=MIN_DISTANCE, min_stop_duration=timedelta(minutes=MIN_STOP_DURATION))
+        pts = aggregator.get_significant_points_gdf()
+        clusters = aggregator.get_clusters_gdf()
+        flows = aggregator.get_flows_gdf()
+        return flows
 
     def cluster(self, points_mp):
 
