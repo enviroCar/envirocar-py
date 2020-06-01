@@ -160,12 +160,14 @@ class Preprocessing():
         Returns:
             moving pandas trajectory or trajectory collection
         """
-        if generalizationType == GeneralizationType.DouglasPeucker:
+
+        if (not isinstance(generalizationType, GeneralizationType)):
+            raise ValueError("Invalid generalization type " + str(generalizationType))
+
+        if generalizationType.value == GeneralizationType.DouglasPeucker.value:
             return mpd.DouglasPeuckerGeneralizer(traj).generalize(tolerance=tolerance)
-        elif generalizationType == GeneralizationType.MinDistance:
+        elif generalizationType.value == GeneralizationType.MinDistance.value:
             return mpd.MinDistanceGeneralizer(traj).generalize(tolerance=tolerance)
-        elif generalizationType == GeneralizationType.MinTimeDelta:
+        elif generalizationType.value == GeneralizationType.MinTimeDelta.value:
             return mpd.MinTimeDeltaGeneralizer(traj).generalize(tolerance=timedelta(minutes=tolerance))
-        else: 
-            raise ValueError("Invalid generalization type" + str(generalizationType))
         
