@@ -5,6 +5,12 @@ import numpy as np
 import datetime
 import folium
 import movingpandas as mpd
+import enum
+
+class GeneralizationType(enum.Enum):
+    DouglasPeucker = 0
+    MinDistance = 1
+    MinTimeDelta = 2
 
 class Preprocessing():
     def __init__(self):
@@ -142,4 +148,24 @@ class Preprocessing():
         # TODO clustering of points here
 
         return 'Clustering function was called. Substitute this string with clustering result'
+
+    def generalize(self, traj, tolerance, generalizationType):
+        """ Generalizes the moving pandas trajectory or trajectory collection
+
+        Keyword Arguments:
+            traj -- movingpandas trajectory/trajectory collection  
+            tolerance -- tolerance from 0 to 1. Specify minutes incase of MinTimDelta generalization type
+            generalizationType -- type of generalization e.g. Douglas Peucker, Min Distance, or Min Time Delta
+
+        Returns:
+            moving pandas trajectory or trajectory collection
+        """
+        if generalizationType == GeneralizationType.DouglasPeucker:
+            return mpd.DouglasPeuckerGeneralizer(traj).generalize(tolerance=tolerance)
+        elif generalizationType == GeneralizationType.MinDistance:
+            return mpd.MinDistanceGeneralizer(traj).generalize(tolerance=tolerance)
+        elif generalizationType == GeneralizationType.MinTimeDelta:
+            return mpd.MinTimeDeltaGeneralizer(traj).generalize(tolerance=timedelta(minutes=tolerance))
+        else: 
+            raise ValueError("Invalid generalization type" + str(generalizationType))
         
