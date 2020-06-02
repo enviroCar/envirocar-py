@@ -1,10 +1,11 @@
 from scipy import interpolate
-from datetime import timedelta
+from statistics import mean
 import pandas as pd
 import numpy as np
 import datetime
 import folium
 import movingpandas as mpd
+from shapely.geometry import Point, LineString, Polygon
 
 class Preprocessing():
     def __init__(self):
@@ -102,44 +103,85 @@ class Preprocessing():
 
         return interpolated_df
 
-    # Creating trajectiors from each unique set of points in dataframe
-    # Creats a Moving Pandas Trajectory Collection Object
-    def trajectoryCollection(self, data_df, MIN_LENGTH):
-        track_df = data_df
 
-        # adding a time field as 't' for moving pandas indexing
-        track_df['t'] = pd.to_datetime(track_df['time'], format='%Y-%m-%dT%H:%M:%S')
-        track_df = track_df.set_index('t')
+    def aggregate(self, track_df, MIN_LENGTH, MIN_GAP, MAX_DISTANCE, MIN_DISTANCE, MIN_STOP_DURATION ):
+        """ Transforms to Moving Pandas, Converts into Trajectories, Ignore small trajectories and return Aggregated Flows
 
-        # using moving pandas trajectory collection function to convert trajectory points into actual trajectories  
+        Keyword Arguments:
+            track_df {GeoDataFrame} -- A Moving Pandas GeoDataFrame containing the track points
+            MIN_LENGTH {integer} -- Minimum Length of a Trajectory (to be considered as a Trajectory)
+            MIN_GAP {integer} -- Minimum Gap (in minutes) for splitting single Trajectory into more 
+            MAX_DISTANCE {integer} -- Maximum distance between significant points 
+            MIN_DISTANCE {integer} -- Minimum distance between significant points 
+            MIN_STOP_DURATION {integer} -- Minimum duration (in minutes) required for stop detection
+
+        Returns:
+            flows -- A GeoDataFrame containing Aggregared Flows (linestrings)
+        """
+
+        # Using MPD function to convert trajectory points into actual trajectories  
         traj_collection = mpd.TrajectoryCollection(track_df, 'track.id', min_length=MIN_LENGTH)
         print("Finished creating {} trajectories".format(len(traj_collection)))
-        return traj_collection
 
-    # Splitting Trajectories based on time gap between records to extract Trips
-    def split_by_gap (self, TRAJ_COLLECTION, MIN_GAP):
-        traj_collection = TRAJ_COLLECTION
-        
-        # using moving pandas function to split trajectories as 'trips'
-        trips = traj_collection.split_by_observation_gap(timedelta(minutes=MIN_GAP))
+        # Using MPD function to Split Trajectories based on time gap between records to extract Trips
+        trips = traj_collection.split_by_observation_gap(datetime.timedelta(minutes=MIN_GAP))
         print("Extracted {} individual trips from {} continuous vehicle tracks".format(len(trips), len(traj_collection)))
-        return trips
 
-    # To Aggregate given Trips and get Aggregated Flows
-    def aggregate(self, TRIPS, MAX_DISTANCE, MIN_DISTANCE, MIN_STOP_DURATION ):
-        #%%time
-        trips = TRIPS
-
-        # using moving pandas function to Aggregate Trajectories
-        aggregator = mpd.TrajectoryCollectionAggregator(trips, max_distance=MAX_DISTANCE, min_distance=MIN_DISTANCE, min_stop_duration=timedelta(minutes=MIN_STOP_DURATION))
-        pts = aggregator.get_significant_points_gdf()
-        clusters = aggregator.get_clusters_gdf()
+        # Using MPD function to Aggregate Trajectories
+        aggregator = mpd.TrajectoryCollectionAggregator(trips, max_distance=MAX_DISTANCE, min_distance=MIN_DISTANCE, min_stop_duration=datetime.timedelta(minutes=MIN_STOP_DURATION))
+        #pts = aggregator.get_significant_points_gdf()
+        #clusters = aggregator.get_clusters_gdf()
         flows = aggregator.get_flows_gdf()
         return flows
 
+    def flow_between_regions(self, data_mpd_df, from_region, to_region, twoway):
+        """ How many entities moved between from_region to to_region (one way or both ways) 
+
+        Keyword Arguments:
+            data_mpd_df {GeoDataFrame} -- A Moving Pandas GeoDataFrame containing the track points
+            from_region {Polygon} -- A shapely polygon as our Feautre of Interest (FOI) - 1 
+            to_region {Polygon} -- A shapely polygon as our Feautre of Interest (FOI) - 2 
+            twoways {Boolean} -- if two way or one regions are to be computed
+
+        Returns:
+            regional_trajectories -- A list of trajectories moving between provided regions
+        """
+
+        traj_collection = mpd.TrajectoryCollection(data_mpd_df, 'track.id')
+
+        regional_trajectories = []
+
+        for traj in traj_collection.trajectories:
+            if traj.get_start_location().intersects(from_region):
+                if traj.get_end_location().intersects(to_region):
+                    regional_trajectories.append(traj)
+            if twoway:
+                if traj.get_start_location().intersects(to_region):
+                    if traj.get_end_location().intersects(from_region):
+                        regional_trajectories.append(traj)
+
+        if twoway:
+            print("Found {} trajectories moving between provided regions with following details:".format(len(regional_trajectories)))
+        else:
+            print("Found {} trajectories moving from 'from_region' to 'to_region' with following details:".format(len(regional_trajectories)))
+
+        index = 0
+        lengths = []
+        durations = []
+
+        for row in regional_trajectories:
+            lengths.append(round((regional_trajectories[index].get_length()/1000), 2))
+            durations.append(regional_trajectories[index].get_duration().total_seconds())
+            index +=1
+
+        print("Average Distance: {} kms".format(round(mean(lengths),2)))
+        print("Maximum Distance: {} kms".format(max(lengths)))
+        print("Average Duration: {} ".format(str(datetime.timedelta(seconds = round(mean(durations),0)))))
+        print("Maximum Duration: {} ".format(str(datetime.timedelta(seconds = round(max(durations),0)))))
+
+        return regional_trajectories 
+
     def cluster(self, points_mp):
-
         # TODO clustering of points here
-
         return 'Clustering function was called. Substitute this string with clustering result'
         
