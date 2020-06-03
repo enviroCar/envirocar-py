@@ -1,0 +1,10 @@
+name: envirocar
+channels:
+  - conda-forge
+dependencies:
+  - ipykernel
+  - python=3.6
+  - geopandas
+  - pip 
+  - pip:
+    - envirocar-py
