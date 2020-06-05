@@ -146,16 +146,17 @@ class Preprocessing():
         Returns:
             regional_trajectories -- A list of trajectories moving between provided regions
         """
-
+        # Converting mpd gdf into a trajectory collection object
         traj_collection = mpd.TrajectoryCollection(data_mpd_df, 'track.id')
 
         regional_trajectories = []
 
+        # To extract trajectories running between regions
         for traj in traj_collection.trajectories:
             if traj.get_start_location().intersects(from_region):
                 if traj.get_end_location().intersects(to_region):
                     regional_trajectories.append(traj)
-            if twoway:
+            if twoway: #if two way is to be considered
                 if traj.get_start_location().intersects(to_region):
                     if traj.get_end_location().intersects(from_region):
                         regional_trajectories.append(traj)
@@ -169,6 +170,7 @@ class Preprocessing():
         lengths = []
         durations = []
 
+        # To extract Stats related to Distance and Duration
         for row in regional_trajectories:
             lengths.append(round((regional_trajectories[index].get_length()/1000), 2))
             durations.append(regional_trajectories[index].get_duration().total_seconds())
@@ -179,6 +181,7 @@ class Preprocessing():
         print("Average Duration: {} ".format(str(datetime.timedelta(seconds = round(mean(durations),0)))))
         print("Maximum Duration: {} ".format(str(datetime.timedelta(seconds = round(max(durations),0)))))
 
+        # List of Trajectories between regions
         return regional_trajectories 
 
     def cluster(self, points_mp):
