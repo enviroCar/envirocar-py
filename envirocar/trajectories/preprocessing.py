@@ -3,8 +3,12 @@ from math import floor, ceil
 from scipy import interpolate
 from statistics import mean
 import pandas as pd
+import geopandas as gpd
 import numpy as np
 import datetime
+import random
+import string
+
 import folium
 import movingpandas as mpd
 from shapely.geometry import Point, LineString, Polygon
@@ -29,6 +33,7 @@ class Preprocessing():
             new_points -- Points with outliers removed
         """
 
+        # print(points['time'])
         first_quartile = points[column].quantile(0.25)
         third_quartile = points[column].quantile(0.75)
         iqr = third_quartile-first_quartile   # Interquartile range
@@ -37,7 +42,7 @@ class Preprocessing():
 
         new_points = points.loc[(points[column] > fence_low) & (
             points[column] < fence_high)]
-
+        # print(new_points['time'])
         return new_points
 
     def interpolate(self, points):
@@ -60,7 +65,12 @@ class Preprocessing():
             date = datetime.datetime.fromtimestamp(x, datetime.timezone.utc)
             return date
 
-        # to have flat attributes
+        def randStr(chars=string.ascii_uppercase + string.digits, N=24):
+            return ''.join(random.choice(chars) for _ in range(N))
+
+        print(points.shape)
+
+        # to have flat attributes for coordinates
         points['lat'] = points['geometry'].apply(lambda coord: coord.y)
         points['lng'] = points['geometry'].apply(lambda coord: coord.x)
         points_df = pd.DataFrame(points)
@@ -70,43 +80,84 @@ class Preprocessing():
             ['lat', 'lng'], keep='last')
 
         # input for datetime in seconds
-        input_time = np.vectorize(date_to_seconds)(
+        points_df_cleaned['time_seconds'] = np.vectorize(date_to_seconds)(
             np.array(points_df_cleaned.time.values.tolist()))
 
-        # measurements TODO which else?
-        input_co2 = np.array(points_df_cleaned['CO2.value'].values.tolist())
-        input_speed = np.array(
-            points_df_cleaned['Speed.value'].values.tolist())
+        # creating the column name lists
+        names_interpolate = [s for s in points_df_cleaned.columns if
+                             '.value' in s]
+        # adding the other column names at front
+        names_interpolate = ['lng', 'lat', 'time_seconds'] + names_interpolate
+        names_replicatate = np.setdiff1d(points_df_cleaned.columns,
+                                         names_interpolate)
+        names_extra = ['geometry', 'id', 'time']
+        names_replicatate = [x for x in names_replicatate if x
+                             not in names_extra]
 
-        # input arrays for coordinates
-        input_coords_y = np.array(points_df_cleaned.lat.values.tolist())
-        input_coords_x = np.array(points_df_cleaned.lng.values.tolist())
+        # measurements themselves
+        columns_interpolate = [np.array(
+            points_df_cleaned[column].values.tolist()) for column
+            in names_interpolate]
+
+        # split dataframe because splprep cannot take more than 11
+        dfs = np.split(columns_interpolate, [4, 14], axis=0)
 
         """ Interpolation itself """
         # Find the B-spline representation of the curve
         # tck (t,c,k): is a tuple containing the vector of knots,
         # the B-spline coefficients, and the degree of the spline.
         # u: is an array of the values of the parameter.
-        tck, u = interpolate.splprep(
-            [input_coords_x, input_coords_y, input_time, input_co2,
-             input_speed], s=0)
-        step = np.linspace(0, 1, input_time[-1] - input_time[0])
+
+        # print(type(dfs[0][2]))
         # interpolating so many points to have a point for each second
-        new_points = interpolate.splev(step, tck)
+        step = np.linspace(0, 1, points_df_cleaned['time_seconds'].iloc[-1] -
+                           points_df_cleaned['time_seconds'].iloc[0])
+        tck_0, u_0 = interpolate.splprep(dfs[0], s=0)
+        new_points_0 = interpolate.splev(step, tck_0)
+        tck_1, u_1 = interpolate.splprep(dfs[1], s=0)
+        new_points_1 = interpolate.splev(step, tck_1)
+        tck_2, u_2 = interpolate.splprep(dfs[2], s=0)
+        new_points_2 = interpolate.splev(step, tck_2)
+
+        new_points = new_points_0 + new_points_1 + new_points_2
 
         # transposing the resulting matrix to fit it in the dataframe
         data = np.transpose(new_points)
 
         # constructing the new dataframe
         interpolated_df = pd.DataFrame(data)
-        interpolated_df.columns = ['lng', 'lat',
-                                   'time_seconds', 'CO2.value', 'Speed.value']
+
+        interpolated_df.columns = names_interpolate
         interpolated_df['time'] = np.vectorize(
             seconds_to_date)(interpolated_df['time_seconds'])
-        # TODO is there need for this column?
-        interpolated_df.drop(['time_seconds'], axis=1)
 
-        return interpolated_df
+        # these should all be the same for one ride, so just replicating
+        columns_replicate = [np.repeat(points_df_cleaned[column].iloc[0],
+                             len(step)) for column in names_replicatate]
+
+        replicated_transposed = np.transpose(columns_replicate)
+        replicated_df = pd.DataFrame(replicated_transposed)
+        replicated_df.columns = names_replicatate
+
+        # combining replicated with interpolated
+        full_df = pd.concat([interpolated_df, replicated_df], axis=1,
+                            sort=False)
+
+        # adding ids
+        full_df['id'] = 0
+        for row in full_df.index:
+            full_df['id'][row] = randStr()
+
+        # transforming back to a geodataframe
+        full_gdf = gpd.GeoDataFrame(
+         full_df, geometry=gpd.points_from_xy(full_df.lng, full_df.lat))
+
+        # remove full_gdf['lng'], full_gdf['lat'] ?
+        del full_gdf['time_seconds']
+
+        print(full_gdf.shape)
+
+        return full_gdf
 
 
     def aggregate(self, track_df, MIN_LENGTH, MIN_GAP, MAX_DISTANCE, MIN_DISTANCE, MIN_STOP_DURATION ):
