@@ -1,11 +1,21 @@
+import os
+from math import floor, ceil
 from scipy import interpolate
 from statistics import mean
 import pandas as pd
+import geopandas as gpd
 import numpy as np
 import datetime
+import random
+import string
+
 import folium
 import movingpandas as mpd
+from copy import copy
 from shapely.geometry import Point, LineString, Polygon
+import geopandas as gpd
+import json
+from branca.colormap import linear
 
 class Preprocessing():
     def __init__(self):
@@ -24,6 +34,7 @@ class Preprocessing():
             new_points -- Points with outliers removed
         """
 
+        # print(points['time'])
         first_quartile = points[column].quantile(0.25)
         third_quartile = points[column].quantile(0.75)
         iqr = third_quartile-first_quartile   # Interquartile range
@@ -32,7 +43,7 @@ class Preprocessing():
 
         new_points = points.loc[(points[column] > fence_low) & (
             points[column] < fence_high)]
-
+        # print(new_points['time'])
         return new_points
 
     def interpolate(self, points):
@@ -55,7 +66,12 @@ class Preprocessing():
             date = datetime.datetime.fromtimestamp(x, datetime.timezone.utc)
             return date
 
-        # to have flat attributes
+        def randStr(chars=string.ascii_uppercase + string.digits, N=24):
+            return ''.join(random.choice(chars) for _ in range(N))
+
+        print(points.shape)
+
+        # to have flat attributes for coordinates
         points['lat'] = points['geometry'].apply(lambda coord: coord.y)
         points['lng'] = points['geometry'].apply(lambda coord: coord.x)
         points_df = pd.DataFrame(points)
@@ -65,43 +81,84 @@ class Preprocessing():
             ['lat', 'lng'], keep='last')
 
         # input for datetime in seconds
-        input_time = np.vectorize(date_to_seconds)(
+        points_df_cleaned['time_seconds'] = np.vectorize(date_to_seconds)(
             np.array(points_df_cleaned.time.values.tolist()))
 
-        # measurements TODO which else?
-        input_co2 = np.array(points_df_cleaned['CO2.value'].values.tolist())
-        input_speed = np.array(
-            points_df_cleaned['Speed.value'].values.tolist())
+        # creating the column name lists
+        names_interpolate = [s for s in points_df_cleaned.columns if
+                             '.value' in s]
+        # adding the other column names at front
+        names_interpolate = ['lng', 'lat', 'time_seconds'] + names_interpolate
+        names_replicatate = np.setdiff1d(points_df_cleaned.columns,
+                                         names_interpolate)
+        names_extra = ['geometry', 'id', 'time']
+        names_replicatate = [x for x in names_replicatate if x
+                             not in names_extra]
 
-        # input arrays for coordinates
-        input_coords_y = np.array(points_df_cleaned.lat.values.tolist())
-        input_coords_x = np.array(points_df_cleaned.lng.values.tolist())
+        # measurements themselves
+        columns_interpolate = [np.array(
+            points_df_cleaned[column].values.tolist()) for column
+            in names_interpolate]
+
+        # split dataframe because splprep cannot take more than 11
+        dfs = np.split(columns_interpolate, [4, 14], axis=0)
 
         """ Interpolation itself """
         # Find the B-spline representation of the curve
         # tck (t,c,k): is a tuple containing the vector of knots,
         # the B-spline coefficients, and the degree of the spline.
         # u: is an array of the values of the parameter.
-        tck, u = interpolate.splprep(
-            [input_coords_x, input_coords_y, input_time, input_co2,
-             input_speed], s=0)
-        step = np.linspace(0, 1, input_time[-1] - input_time[0])
+
+        # print(type(dfs[0][2]))
         # interpolating so many points to have a point for each second
-        new_points = interpolate.splev(step, tck)
+        step = np.linspace(0, 1, points_df_cleaned['time_seconds'].iloc[-1] -
+                           points_df_cleaned['time_seconds'].iloc[0])
+        tck_0, u_0 = interpolate.splprep(dfs[0], s=0)
+        new_points_0 = interpolate.splev(step, tck_0)
+        tck_1, u_1 = interpolate.splprep(dfs[1], s=0)
+        new_points_1 = interpolate.splev(step, tck_1)
+        tck_2, u_2 = interpolate.splprep(dfs[2], s=0)
+        new_points_2 = interpolate.splev(step, tck_2)
+
+        new_points = new_points_0 + new_points_1 + new_points_2
 
         # transposing the resulting matrix to fit it in the dataframe
         data = np.transpose(new_points)
 
         # constructing the new dataframe
         interpolated_df = pd.DataFrame(data)
-        interpolated_df.columns = ['lng', 'lat',
-                                   'time_seconds', 'CO2.value', 'Speed.value']
+
+        interpolated_df.columns = names_interpolate
         interpolated_df['time'] = np.vectorize(
             seconds_to_date)(interpolated_df['time_seconds'])
-        # TODO is there need for this column?
-        interpolated_df.drop(['time_seconds'], axis=1)
 
-        return interpolated_df
+        # these should all be the same for one ride, so just replicating
+        columns_replicate = [np.repeat(points_df_cleaned[column].iloc[0],
+                             len(step)) for column in names_replicatate]
+
+        replicated_transposed = np.transpose(columns_replicate)
+        replicated_df = pd.DataFrame(replicated_transposed)
+        replicated_df.columns = names_replicatate
+
+        # combining replicated with interpolated
+        full_df = pd.concat([interpolated_df, replicated_df], axis=1,
+                            sort=False)
+
+        # adding ids
+        full_df['id'] = 0
+        for row in full_df.index:
+            full_df['id'][row] = randStr()
+
+        # transforming back to a geodataframe
+        full_gdf = gpd.GeoDataFrame(
+         full_df, geometry=gpd.points_from_xy(full_df.lng, full_df.lat))
+
+        # remove full_gdf['lng'], full_gdf['lat'] ?
+        del full_gdf['time_seconds']
+
+        print(full_gdf.shape)
+
+        return full_gdf
 
 
     def aggregate(self, track_df, MIN_LENGTH, MIN_GAP, MAX_DISTANCE, MIN_DISTANCE, MIN_STOP_DURATION ):
@@ -129,10 +186,157 @@ class Preprocessing():
 
         # Using MPD function to Aggregate Trajectories
         aggregator = mpd.TrajectoryCollectionAggregator(trips, max_distance=MAX_DISTANCE, min_distance=MIN_DISTANCE, min_stop_duration=datetime.timedelta(minutes=MIN_STOP_DURATION))
-        #pts = aggregator.get_significant_points_gdf()
-        #clusters = aggregator.get_clusters_gdf()
         flows = aggregator.get_flows_gdf()
         return flows
+           
+    def aggregateByGrid(self,df,field,summary,gridSize):
+        """
+        Aggregates the specified field with chosen summary type and user defined grid size. returns aggregated grids with summary
+
+        Parameters
+        ----------
+        df : geopandas dataframe
+        field : string
+            field to be summarized.
+        summary : string
+            type of summary to be sumarized. eg. min, max,sum, median
+        gridSize : float
+            the size of grid on same unit as geodataframe coordinates. 
+
+        Returns
+        -------
+        geodataframe
+            Aggregated grids with summary on it
+
+        """
+        def round_down(num, divisor):
+            return floor(num / divisor) * divisor
+        def round_up(num, divisor):
+            return ceil(num / divisor) * divisor
+        xmin,ymin,xmax,ymax =  df.total_bounds
+        height,width=gridSize,gridSize
+        top,left=round_up(ymax,height),round_down(xmin,width)
+        bottom,right=round_down(ymin,height),round_up(xmax,width)
+    
+    
+        rows = int((top -bottom) /  height)+1
+        cols = int((right -left) / width)+1
+    
+        XleftOrigin = left
+        XrightOrigin = left + width
+        YtopOrigin = top
+        YbottomOrigin = top- height
+        polygons = []
+        for i in range(cols):
+            Ytop = YtopOrigin
+            Ybottom =YbottomOrigin
+            for j in range(rows):
+                polygons.append(Polygon([(XleftOrigin, Ytop), (XrightOrigin, Ytop), (XrightOrigin, Ybottom), (XleftOrigin, Ybottom)]))
+                Ytop = Ytop - height
+                Ybottom = Ybottom - height
+            XleftOrigin = XleftOrigin + width
+            XrightOrigin = XrightOrigin + width
+    
+        grid = gpd.GeoDataFrame({'geometry':polygons})
+        grid.crs=df.crs
+       
+        #Assign gridid
+        numGrid=len(grid)
+        grid['gridId']=list(range(numGrid))
+    
+        #Identify gridId for each point
+        points_identified= gpd.sjoin(df,grid,op='within')
+    
+        #group points by gridid and calculate mean Easting, store it as dataframe
+        #delete if field already exists
+        if field in grid.columns:
+            del grid[field]
+        grouped = points_identified.groupby('gridId')[field].agg(summary)
+        grouped_df=pd.DataFrame(grouped)
+        
+        new_grid=grid.join(grouped_df, on='gridId').fillna(0)
+        new_grid['x_centroid'],new_grid['y_centroid']=new_grid.geometry.centroid.x,new_grid.geometry.centroid.y
+        grid=new_grid
+        return grid
+    
+    def plotAggregate(self,grid,field):
+        """
+        Plots the aggregated data on grid. Please call aggregateByGrid function before this step.
+
+        Parameters
+        ----------
+        grid :polygon geodataframe
+            The grid geodataframe with grid and aggregated data in a column. Grid shoud have grid id or equivalent unique ids
+        field : string
+            Fieldname with aggregated data
+
+        Returns
+        -------
+        m : folium map object
+            Folium map with openstreetmap as base.
+
+        """
+        #Prepare for grid plotting using folium
+        grid.columns=[cols.replace('.', '_') for cols in grid.columns]
+        field=field.replace('.','_')
+        #Convert grid id to string
+        grid['gridId']=grid['gridId'].astype(str)
+        #only select grid with non zero values
+        grid=grid[grid[field]>0]
+        
+        #Convert data to geojson and csv 
+        atts=pd.DataFrame(grid.drop(columns=['geometry','x_centroid','y_centroid']))
+        grid.to_file("grids.geojson", driver='GeoJSON')
+        atts.to_csv("attributes.csv", index=False)
+        
+        #load spatial and non-spatial data
+        data_geojson_source="grids.geojson"
+        data_geojson=json.load(open(data_geojson_source))
+        
+        #Get coordiantes for map centre
+        lat=grid.geometry.centroid.y.mean()
+        lon=grid.geometry.centroid.x.mean()
+        #Intialize a new folium map object
+        m = folium.Map(location=[lat,lon],zoom_start=8,tiles='OpenStreetMap')
+        # Configure geojson layer
+        folium.GeoJson(data_geojson).add_to(m)
+    
+        #add attribute data
+        attribute_pd=pd.read_csv("C:\\Users\\DELL\\Desktop\\attributes.csv")
+        attribute=pd.DataFrame(attribute_pd)
+        #Convert gridId to string to ensure it matches with gridId
+        attribute['gridId']=attribute['gridId'].astype(str)
+        
+        # construct color map
+        minvalue=attribute[field].min()
+        maxvalue=attribute[field].max()
+        colormap_rn = linear.YlOrRd_09.scale(minvalue,maxvalue)
+    
+        #Create Dictionary for colormap
+        population_dict_rn = attribute.set_index('gridId')[field]
+    
+        #create map
+        folium.GeoJson(
+           data_geojson,
+            name='Choropleth map',
+            style_function=lambda feature: {
+                'fillColor': colormap_rn(population_dict_rn[feature['properties']['gridId']]),
+                'color': 'black',
+                'weight': 0.5,
+                'dashArray': '5, 5',
+                'fillOpacity':0.5
+                   }
+        ).add_to(m)
+    
+       #format legend
+        field=field.replace("_"," ")
+        # add a legend
+        colormap_rn.caption = '{value} per grid'.format(value=field)
+        colormap_rn.add_to(m)
+    
+        # add a layer control
+        folium.LayerControl().add_to(m)
+        return m
 
     def flow_between_regions(self, data_mpd_df, from_region, to_region, twoway):
         """ How many entities moved between from_region to to_region (one way or both ways) 
@@ -166,15 +370,13 @@ class Preprocessing():
         else:
             print("Found {} trajectories moving from 'from_region' to 'to_region' with following details:".format(len(regional_trajectories)))
 
-        index = 0
         lengths = []
         durations = []
 
         # To extract Stats related to Distance and Duration
         for row in regional_trajectories:
-            lengths.append(round((regional_trajectories[index].get_length()/1000), 2))
-            durations.append(regional_trajectories[index].get_duration().total_seconds())
-            index +=1
+            lengths.append(round((row.get_length()/1000), 2))
+            durations.append(row.get_duration().total_seconds())
 
         print("Average Distance: {} kms".format(round(mean(lengths),2)))
         print("Maximum Distance: {} kms".format(max(lengths)))
@@ -182,9 +384,142 @@ class Preprocessing():
         print("Maximum Duration: {} ".format(str(datetime.timedelta(seconds = round(max(durations),0)))))
 
         # List of Trajectories between regions
-        return regional_trajectories 
+        return regional_trajectories
+
+    def temporal_filter_weekday(self, mpd_df, filterday):
+        """ Applies temporal filter to the dataframe based on provided WEEKDAY
+
+        Keyword Arguments:
+            mpd_df {GeoDataFrame} -- A Moving Pandas GeoDataFrame containing the track points
+            filterday {String} -- Provided day of the week
+
+        Returns:
+            result -- A Trajectory Collection Object with only trajectories from provided weekday
+        """
+        # Conversion of mpd geodataframe into Trajectory Collection Object of Moving Pandas
+        raw_collection = mpd.TrajectoryCollection(mpd_df, 'track.id', min_length=1)
+
+        # In case, a single trajectory span over two days, split trajectory into two
+        traj_collection = raw_collection.split_by_date('day')
+
+        days = { 0 : "Monday", 1 : "Tuesday", 2 : "Wednesday", 3 : "Thursday", 4 : "Friday", 5 : "Saturday", 6 : "Sunday" }
+
+        # Loop over all trajectories in Trajectory Collection Object
+        for traj in traj_collection.trajectories:
+            # Extract the total number of column in each trajectory's dataframe
+            numcolumns = len(traj.df.columns)
+
+            # Extracting track begin time in datetime object
+            temp_time = pd.to_datetime(traj.df['track.begin'], format='%Y-%m-%dT%H:%M:%SZ')
+
+            # Insertion of two new rows for Formatted Time and Day of the Week
+            traj.df.insert(numcolumns,'Trajectory Time',temp_time)
+            traj.df.insert(numcolumns+1,'Day of Week', 'a')
+
+            # Extracting the time of first row of trajectory df and assign Day of the week to the whole column
+            time_value = traj.df['Trajectory Time'][0]
+            traj.df['Day of Week'] = days[time_value.weekday()]
+
+        filterday_tracks = []
+        # Loop over first row of all trajectories df and select track.id satisfying DAY of the Week condition
+        for traj in traj_collection.trajectories:
+            if(traj.df['Day of Week'][0] == filterday):
+                filterday_tracks.append(traj.df['track.id'][0])
+
+        filtered = []
+        # Loop over list of filtered track.ids and trajectories collection. Filter trajectories with identified track.ids  
+        for f_track in filterday_tracks:
+            for traj in traj_collection.trajectories:
+                if(traj.df['track.id'][0] == f_track):
+                    filtered.append(traj)
+                    break
+
+        # Creating a Trajectory Collection and assign filtered trajectories to it as result
+        result = copy(traj_collection)
+        result.trajectories = filtered
+
+        return result
+
+    def temporal_filter_hours(self, mpd_df, from_time, to_time):
+        """ Applies temporal filter to the dataframe based on provided HOURS duration
+
+        Keyword Arguments:
+            mpd_df {GeoDataFrame} -- A Moving Pandas GeoDataFrame containing the track points
+            from_time {Integer} -- Starting Hour
+            end_time {Integer} -- Ending Hour
+
+        Returns:
+            result -- A Trajectory Collection Object with only trajectories from provided hours duration
+        """
+
+        filtered = []
+
+        # Conversion of mpd geodataframe into Trajectory Collection Object of Moving Pandas
+        raw_collection = mpd.TrajectoryCollection(mpd_df, 'track.id', min_length=1)
+
+        # In case, a single trajectory span over two days, split trajectory into two
+        traj_collection = raw_collection.split_by_date('day')
+
+        for traj in traj_collection.trajectories:
+            #Extracting data for each trajectory 
+            mydate = traj.df['track.begin'][0][0:10]
+            #Converting given hour number to datetime string
+            from_time_string = mydate + ' ' + str(from_time) + ':00:00'
+            to_time_string = mydate + ' ' + str(to_time) + ':00:00'
+
+            # Filter part of trajectory based on provided hours duration
+            filt_segment = traj.df[from_time_string:to_time_string]
+
+            if(len(filt_segment)>0):
+                filtered.append(mpd.Trajectory(filt_segment,traj.df['track.id']))
+
+        # Creating a Trajectory Collection and assign filtered trajectories to it as result
+        result = copy(traj_collection)
+        result.trajectories = filtered
+
+        return result
+
+    def temporal_filter_date(self, mpd_df, filterdate):
+        """ Applies temporal filter to the dataframe based on provided DATE
+
+        Keyword Arguments:
+            mpd_df {GeoDataFrame} -- A Moving Pandas GeoDataFrame containing the track points
+            filterdate {String} -- Date for Filter
+
+        Returns:
+            result -- A Trajectory Collection Object with only trajectories from provided DATE
+        """
+
+        # Conversion of mpd geodataframe into Trajectory Collection Object of Moving Pandas
+        raw_collection = mpd.TrajectoryCollection(mpd_df, 'track.id', min_length=1)
+
+        # In case, a single trajectory span over two days, split trajectory into two
+        traj_collection = raw_collection.split_by_date('day')
+
+        filterday_tracks = []
+        # Loop over first row of all trajectories df and select track.id satisfying DATE condition
+        for traj in traj_collection.trajectories:
+            if(traj.df['track.begin'][0][0:10] == filterdate):
+                filterday_tracks.append(traj.df['track.id'][0])
+
+        filtered = []
+        # Loop over list of filtered track.ids and trajectories collection. Filter trajectories with identified track.ids 
+        for f_track in filterday_tracks:
+            for traj in traj_collection.trajectories:
+                if(traj.df['track.id'][0] == f_track):
+                    filtered.append(traj)
+                    break
+
+        # Creating a Trajectory Collection and assign filtered trajectories to it as result
+        result = copy(traj_collection)
+        result.trajectories = filtered
+
+        return result 
 
     def cluster(self, points_mp):
         # TODO clustering of points here
         return 'Clustering function was called. Substitute this string with clustering result'
+<<<<<<< HEAD
+=======
         
+>>>>>>> 15a6ab450d50ee6aceea4f244d68ab5543f6eb96
