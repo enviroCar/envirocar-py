@@ -519,7 +519,4 @@ class Preprocessing():
     def cluster(self, points_mp):
         # TODO clustering of points here
         return 'Clustering function was called. Substitute this string with clustering result'
-<<<<<<< HEAD
-=======
         
->>>>>>> 15a6ab450d50ee6aceea4f244d68ab5543f6eb96
