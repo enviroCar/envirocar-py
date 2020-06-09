@@ -8,6 +8,7 @@ import numpy as np
 import datetime
 import random
 import string
+from copy import copy
 
 import folium
 import movingpandas as mpd
@@ -385,6 +386,136 @@ class Preprocessing():
 
         # List of Trajectories between regions
         return regional_trajectories
+
+    def temporal_filter_weekday(self, mpd_df, filterday):
+        """ Applies temporal filter to the dataframe based on provided WEEKDAY
+
+        Keyword Arguments:
+            mpd_df {GeoDataFrame} -- A Moving Pandas GeoDataFrame containing the track points
+            filterday {String} -- Provided day of the week
+
+        Returns:
+            result -- A Trajectory Collection Object with only trajectories from provided weekday
+        """
+        # Conversion of mpd geodataframe into Trajectory Collection Object of Moving Pandas
+        raw_collection = mpd.TrajectoryCollection(mpd_df, 'track.id', min_length=1)
+
+        # In case, a single trajectory span over two days, split trajectory into two
+        traj_collection = raw_collection.split_by_date('day')
+
+        days = { 0 : "Monday", 1 : "Tuesday", 2 : "Wednesday", 3 : "Thursday", 4 : "Friday", 5 : "Saturday", 6 : "Sunday" }
+
+        # Loop over all trajectories in Trajectory Collection Object
+        for traj in traj_collection.trajectories:
+            # Extract the total number of column in each trajectory's dataframe
+            numcolumns = len(traj.df.columns)
+
+            # Extracting track begin time in datetime object
+            temp_time = pd.to_datetime(traj.df['track.begin'], format='%Y-%m-%dT%H:%M:%SZ')
+
+            # Insertion of two new rows for Formatted Time and Day of the Week
+            traj.df.insert(numcolumns,'Trajectory Time',temp_time)
+            traj.df.insert(numcolumns+1,'Day of Week', 'a')
+
+            # Extracting the time of first row of trajectory df and assign Day of the week to the whole column
+            time_value = traj.df['Trajectory Time'][0]
+            traj.df['Day of Week'] = days[time_value.weekday()]
+
+        filterday_tracks = []
+        # Loop over first row of all trajectories df and select track.id satisfying DAY of the Week condition
+        for traj in traj_collection.trajectories:
+            if(traj.df['Day of Week'][0] == filterday):
+                filterday_tracks.append(traj.df['track.id'][0])
+
+        filtered = []
+        # Loop over list of filtered track.ids and trajectories collection. Filter trajectories with identified track.ids  
+        for f_track in filterday_tracks:
+            for traj in traj_collection.trajectories:
+                if(traj.df['track.id'][0] == f_track):
+                    filtered.append(traj)
+                    break
+
+        # Creating a Trajectory Collection and assign filtered trajectories to it as result
+        result = copy(traj_collection)
+        result.trajectories = filtered
+
+        return result
+
+    def temporal_filter_hours(self, mpd_df, from_time, to_time):
+        """ Applies temporal filter to the dataframe based on provided HOURS duration
+
+        Keyword Arguments:
+            mpd_df {GeoDataFrame} -- A Moving Pandas GeoDataFrame containing the track points
+            from_time {Integer} -- Starting Hour
+            end_time {Integer} -- Ending Hour
+
+        Returns:
+            result -- A Trajectory Collection Object with only trajectories from provided hours duration
+        """
+
+        filtered = []
+
+        # Conversion of mpd geodataframe into Trajectory Collection Object of Moving Pandas
+        raw_collection = mpd.TrajectoryCollection(mpd_df, 'track.id', min_length=1)
+
+        # In case, a single trajectory span over two days, split trajectory into two
+        traj_collection = raw_collection.split_by_date('day')
+
+        for traj in traj_collection.trajectories:
+            #Extracting data for each trajectory 
+            mydate = traj.df['track.begin'][0][0:10]
+            #Converting given hour number to datetime string
+            from_time_string = mydate + ' ' + str(from_time) + ':00:00'
+            to_time_string = mydate + ' ' + str(to_time) + ':00:00'
+
+            # Filter part of trajectory based on provided hours duration
+            filt_segment = traj.df[from_time_string:to_time_string]
+
+            if(len(filt_segment)>0):
+                filtered.append(mpd.Trajectory(filt_segment,traj.df['track.id']))
+
+        # Creating a Trajectory Collection and assign filtered trajectories to it as result
+        result = copy(traj_collection)
+        result.trajectories = filtered
+
+        return result
+
+    def temporal_filter_date(self, mpd_df, filterdate):
+        """ Applies temporal filter to the dataframe based on provided DATE
+
+        Keyword Arguments:
+            mpd_df {GeoDataFrame} -- A Moving Pandas GeoDataFrame containing the track points
+            filterdate {String} -- Date for Filter
+
+        Returns:
+            result -- A Trajectory Collection Object with only trajectories from provided DATE
+        """
+
+        # Conversion of mpd geodataframe into Trajectory Collection Object of Moving Pandas
+        raw_collection = mpd.TrajectoryCollection(mpd_df, 'track.id', min_length=1)
+
+        # In case, a single trajectory span over two days, split trajectory into two
+        traj_collection = raw_collection.split_by_date('day')
+
+        filterday_tracks = []
+        # Loop over first row of all trajectories df and select track.id satisfying DATE condition
+        for traj in traj_collection.trajectories:
+            if(traj.df['track.begin'][0][0:10] == filterdate):
+                filterday_tracks.append(traj.df['track.id'][0])
+
+        filtered = []
+        # Loop over list of filtered track.ids and trajectories collection. Filter trajectories with identified track.ids 
+        for f_track in filterday_tracks:
+            for traj in traj_collection.trajectories:
+                if(traj.df['track.id'][0] == f_track):
+                    filtered.append(traj)
+                    break
+
+        # Creating a Trajectory Collection and assign filtered trajectories to it as result
+        result = copy(traj_collection)
+        result.trajectories = filtered
+
+        return result 
 
     def temporal_filter_weekday(self, mpd_df, filterday):
         """ Applies temporal filter to the dataframe based on provided WEEKDAY
