@@ -70,7 +70,19 @@ class Preprocessing():
         def randStr(chars=string.ascii_uppercase + string.digits, N=24):
             return ''.join(random.choice(chars) for _ in range(N))
 
-        print(points.shape)
+        def interpolate_spline(input_array, step):
+            tck, u = interpolate.splprep(input_array, s=0)
+            interpolated = interpolate.splev(step, tck)
+            return interpolated
+
+        def interpolate_linear(step_init, values, step_final):
+            f = interpolate.interp1d(step_init, values, axis=0,
+                                     fill_value="extrapolate")
+            values_new = f(step_final)
+            return values_new
+
+        print('Amount of points before interpolation',
+              points.shape)
 
         # to have flat attributes for coordinates
         points['lat'] = points['geometry'].apply(lambda coord: coord.y)
@@ -102,7 +114,7 @@ class Preprocessing():
             in names_interpolate]
 
         # split dataframe because splprep cannot take more than 11
-        dfs = np.split(columns_interpolate, [4, 14], axis=0)
+        dfs = np.split(columns_interpolate, [2], axis=0)
 
         """ Interpolation itself """
         # Find the B-spline representation of the curve
@@ -110,18 +122,23 @@ class Preprocessing():
         # the B-spline coefficients, and the degree of the spline.
         # u: is an array of the values of the parameter.
 
-        # print(type(dfs[0][2]))
         # interpolating so many points to have a point for each second
         step = np.linspace(0, 1, points_df_cleaned['time_seconds'].iloc[-1] -
                            points_df_cleaned['time_seconds'].iloc[0])
-        tck_0, u_0 = interpolate.splprep(dfs[0], s=0)
-        new_points_0 = interpolate.splev(step, tck_0)
-        tck_1, u_1 = interpolate.splprep(dfs[1], s=0)
-        new_points_1 = interpolate.splev(step, tck_1)
-        tck_2, u_2 = interpolate.splprep(dfs[2], s=0)
-        new_points_2 = interpolate.splev(step, tck_2)
 
-        new_points = new_points_0 + new_points_1 + new_points_2
+        seconds = np.linspace(points_df_cleaned['time_seconds'].iloc[0],
+                              points_df_cleaned['time_seconds'].iloc[-1],
+                              points_df_cleaned['time_seconds'].iloc[-1] -
+                              points_df_cleaned['time_seconds'].iloc[0])
+
+        new_points = interpolate_spline(dfs[0], step)
+
+        for idx, column in enumerate(dfs[1]):
+            if (idx == 0):
+                new_points.append(seconds)
+            else:
+                new_points.append(interpolate_linear(points_df_cleaned[
+                 'time_seconds'], column, seconds))
 
         # transposing the resulting matrix to fit it in the dataframe
         data = np.transpose(new_points)
@@ -157,7 +174,8 @@ class Preprocessing():
         # remove full_gdf['lng'], full_gdf['lat'] ?
         del full_gdf['time_seconds']
 
-        print(full_gdf.shape)
+        print('Amount of points after interpolation',
+              full_gdf.shape)
 
         return full_gdf
 
