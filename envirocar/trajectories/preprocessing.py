@@ -321,7 +321,7 @@ class Preprocessing():
         folium.GeoJson(data_geojson).add_to(m)
     
         #add attribute data
-        attribute_pd=pd.read_csv("C:\\Users\\DELL\\Desktop\\attributes.csv")
+        attribute_pd=pd.read_csv("attributes.csv")
         attribute=pd.DataFrame(attribute_pd)
         #Convert gridId to string to ensure it matches with gridId
         attribute['gridId']=attribute['gridId'].astype(str)
@@ -344,7 +344,9 @@ class Preprocessing():
                 'weight': 0.5,
                 'dashArray': '5, 5',
                 'fillOpacity':0.5
-                   }
+                   },
+            highlight_function=lambda feature:{'weight':3,'color':'black','fillOpacity':1},
+            tooltip=folium.features.GeoJsonTooltip(fields=[field],aliases=[field])
         ).add_to(m)
     
        #format legend
