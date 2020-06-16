@@ -3,7 +3,6 @@ import numpy as np
 from geopandas import GeoDataFrame
 from shapely.geometry import Point, LineString
 
-
 class Trajectory():
     def __init__(self, id, df, id_col):
         self.id = id
@@ -55,8 +54,3 @@ class Trajectory():
         coordinates_np[:, 0] = self.get_longitudes()
         coordinates_np[:, 1] = self.get_latitudes()
         return coordinates_np
-        
-        
-            
-        
-        
