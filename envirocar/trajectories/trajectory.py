@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from geopandas import GeoDataFrame
 from shapely.geometry import Point, LineString
 
@@ -39,3 +40,23 @@ class Trajectory():
             return self.trajectory.iloc[
                 self.trajectory.index.drop_duplicates().get_loc(
                  t, method='nearest')]['geometry']
+    
+    def get_number_points(self):
+        return self.df.shape[0]
+    
+    def get_longitudes(self):
+        return self.df['geometry'].geometry.x
+    
+    def get_latitudes(self):
+        return self.df['geometry'].geometry.y
+    
+    def get_coordinates(self):
+        coordinates_np = np.zeros((self.get_number_points(), 2))
+        coordinates_np[:, 0] = self.get_longitudes()
+        coordinates_np[:, 1] = self.get_latitudes()
+        return coordinates_np
+        
+        
+            
+        
+        
