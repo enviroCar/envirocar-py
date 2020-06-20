@@ -1,14 +1,13 @@
 import numpy as np
 import similaritymeasures
 import matplotlib.pyplot as plt
-from envirocar import Trajectory
 
 class TrackSimilarity():
    
     def __init__(self):
         print("Initializing TrackSimilarity class")
 
-    def similarity(method,trajectoryA,trajectoryB):
+    def similarity(self, method,trajectoryA,trajectoryB):
         
         """ Compute similarity measures using the similaritymeasures
         https://pypi.org/project/similaritymeasures/
