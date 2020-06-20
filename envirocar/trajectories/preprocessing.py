@@ -47,7 +47,7 @@ class Preprocessing():
         traj_collection = TRAJ_COLLECTION
         
         # using moving pandas function to split trajectories as 'trips'
-        trips = traj_collection.split_by_observation_gap(timedelta(minutes=MIN_GAP))
+        trips = traj_collection.split_by_observation_gap(datetime.timedelta(minutes=MIN_GAP))
         print("Extracted {} individual trips from {} continuous vehicle tracks".format(len(trips), len(traj_collection)))
         return trips
 
