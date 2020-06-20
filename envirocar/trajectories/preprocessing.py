@@ -28,6 +28,29 @@ class Preprocessing():
     def __init__(self):
         print("Initializing pre-processing class")   # do we need anything?
 
+    # Creating trajectiors from each unique set of points in dataframe
+    # Creats a Moving Pandas Trajectory Collection Object
+    def trajectoryCollection(self, data_df, MIN_LENGTH):
+        track_df = data_df
+
+        # adding a time field as 't' for moving pandas indexing
+        track_df['t'] = pd.to_datetime(track_df['time'], format='%Y-%m-%dT%H:%M:%S')
+        track_df = track_df.set_index('t')
+
+        # using moving pandas trajectory collection function to convert trajectory points into actual trajectories  
+        traj_collection = mpd.TrajectoryCollection(track_df, 'track.id', min_length=MIN_LENGTH)
+        print("Finished creating {} trajectories".format(len(traj_collection)))
+        return traj_collection
+
+    # Splitting Trajectories based on time gap between records to extract Trips
+    def split_by_gap (self, TRAJ_COLLECTION, MIN_GAP):
+        traj_collection = TRAJ_COLLECTION
+        
+        # using moving pandas function to split trajectories as 'trips'
+        trips = traj_collection.split_by_observation_gap(timedelta(minutes=MIN_GAP))
+        print("Extracted {} individual trips from {} continuous vehicle tracks".format(len(trips), len(traj_collection)))
+        return trips
+
     def remove_outliers(self, points, column):
         """ Remove outliers by using the statistical approach
         as described in
