@@ -6,3 +6,4 @@ matplotlib
 pydeck
 ipython
 folium
+scipy
