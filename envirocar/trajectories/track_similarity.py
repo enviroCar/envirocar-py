@@ -1,7 +1,6 @@
 import numpy as np
 import similaritymeasures
 import matplotlib.pyplot as plt
-from envirocar import Trajectory
 
 class TrackSimilarity():
    
