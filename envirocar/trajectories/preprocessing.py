@@ -566,60 +566,6 @@ class Preprocessing():
 
         return result 
 
-    def temporal_filter_weekday(self, mpd_df, filterday):
-        """ Applies temporal filter to the dataframe based on provided WEEKDAY
-
-        Keyword Arguments:
-            mpd_df {GeoDataFrame} -- A Moving Pandas GeoDataFrame containing the track points
-            filterday {String} -- Provided day of the week
-
-        Returns:
-            result -- A Trajectory Collection Object with only trajectories from provided weekday
-        """
-        # Conversion of mpd geodataframe into Trajectory Collection Object of Moving Pandas
-        raw_collection = mpd.TrajectoryCollection(mpd_df, 'track.id', min_length=1)
-
-        # In case, a single trajectory span over two days, split trajectory into two
-        traj_collection = raw_collection.split_by_date('day')
-
-        days = { 0 : "Monday", 1 : "Tuesday", 2 : "Wednesday", 3 : "Thursday", 4 : "Friday", 5 : "Saturday", 6 : "Sunday" }
-
-        # Loop over all trajectories in Trajectory Collection Object
-        for traj in traj_collection.trajectories:
-            # Extract the total number of column in each trajectory's dataframe
-            numcolumns = len(traj.df.columns)
-
-            # Extracting track begin time in datetime object
-            temp_time = pd.to_datetime(traj.df['track.begin'], format='%Y-%m-%dT%H:%M:%SZ')
-
-            # Insertion of two new rows for Formatted Time and Day of the Week
-            traj.df.insert(numcolumns,'Trajectory Time',temp_time)
-            traj.df.insert(numcolumns+1,'Day of Week', 'a')
-
-            # Extracting the time of first row of trajectory df and assign Day of the week to the whole column
-            time_value = traj.df['Trajectory Time'][0]
-            traj.df['Day of Week'] = days[time_value.weekday()]
-
-        filterday_tracks = []
-        # Loop over first row of all trajectories df and select track.id satisfying DAY of the Week condition
-        for traj in traj_collection.trajectories:
-            if(traj.df['Day of Week'][0] == filterday):
-                filterday_tracks.append(traj.df['track.id'][0])
-
-        filtered = []
-        # Loop over list of filtered track.ids and trajectories collection. Filter trajectories with identified track.ids  
-        for f_track in filterday_tracks:
-            for traj in traj_collection.trajectories:
-                if(traj.df['track.id'][0] == f_track):
-                    filtered.append(traj)
-                    break
-
-        # Creating a Trajectory Collection and assign filtered trajectories to it as result
-        result = copy(traj_collection)
-        result.trajectories = filtered
-
-        return result
-
     def cluster(self, points_mp):
         # TODO clustering of points here
         return 'Clustering function was called. Substitute this string with clustering result'
