@@ -568,45 +568,4 @@ class Preprocessing():
 
     def cluster(self, points_mp):
         # TODO clustering of points here
-        return 'Clustering function was called. Substitute this string with clustering result'
-
-    def generalize(self, traj, tolerance, generalizationMode):
-        """ Generalize the trajectory/trajectory collection
-
-        Supported generalization modes include:
-
-        - ‘douglas-peucker’ (tolerance as float in CRS units or meters if CRS is geographic, e.g. EPSG:4326 WGS84)
-        - ‘min-time-delta’ (tolerance as datetime.timedelta)
-        - ‘min-distance’ (tolerance as float in CRS units or meters if CRS is geographic, e.g. EPSG:4326 WGS84)
-
-        Returns:
-            moving pandas trajectory/trajectory collection
-        """
-
-        return traj.generalize(generalizationMode, tolerance)
-
-    # def _find_average(self, traj, columnName):
-    #     traj['CO2'].avg()
-
-    def generalize_v04(self, traj, tolerance, generalizationType):
-        """ Generalizes the moving pandas trajectory or trajectory collection. 
-        Note: This function will only work with movingpandas v0.4-rc1 and above. See https://github.com/anitagraser/movingpandas/issues/73
-
-        Keyword Arguments:
-            traj -- movingpandas trajectory/trajectory collection  
-            tolerance -- tolerance from 0 to 1. Specify minutes incase of MinTimDelta generalization type
-            generalizationType -- type of generalization e.g. Douglas Peucker, Min Distance, or Min Time Delta
-
-        Returns:
-            moving pandas trajectory or trajectory collection
-        """
-
-        if (not isinstance(generalizationType, GeneralizationType)):
-            raise ValueError("Invalid generalization type " + str(generalizationType))
-
-        if generalizationType.value == GeneralizationType.DouglasPeucker.value:
-            return mpd.DouglasPeuckerGeneralizer(traj).generalize(tolerance=tolerance)
-        elif generalizationType.value == GeneralizationType.MinDistance.value:
-            return  mpd.MinDistanceGeneralizer(traj).generalize(tolerance=tolerance)
-        elif generalizationType.value == GeneralizationType.MinTimeDelta.value:
-            return mpd.MinTimeDeltaGeneralizer(traj).generalize(tolerance=timedelta(minutes=tolerance))
+        return 'Clustering function was called. Substitute this string with clustering result'  
