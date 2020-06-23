@@ -610,4 +610,3 @@ class Preprocessing():
             return  mpd.MinDistanceGeneralizer(traj).generalize(tolerance=tolerance)
         elif generalizationType.value == GeneralizationType.MinTimeDelta.value:
             return mpd.MinTimeDeltaGeneralizer(traj).generalize(tolerance=timedelta(minutes=tolerance))
-        

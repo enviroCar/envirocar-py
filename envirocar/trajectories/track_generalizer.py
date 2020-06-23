@@ -167,16 +167,28 @@ class DouglasPeuckerGeneralizer(TrackGeneralizer):
     """
 
     def _generalize_traj(self, traj, tolerance):
+        prev_pt = None
+        pts = []
         keep_rows = []
         i = 0
-        simplified = traj.to_linestring().simplify(tolerance).coords
 
         for index, row in traj.df.iterrows():
-            current_pt = row[traj.get_geom_column_name()]
-            if current_pt.coords[0] in simplified:
+            current_pt = row.geometry
+            if prev_pt is None:
+                prev_pt = current_pt
                 keep_rows.append(i)
+                continue
+            line = LineString([prev_pt, current_pt])
+            for pt in pts:
+                if line.distance(pt) > tolerance:
+                    prev_pt = current_pt
+                    pts = []
+                    keep_rows.append(i)
+                    continue
+            pts.append(current_pt)
             i += 1
 
+        keep_rows.append(i)
         new_df = traj.df.iloc[keep_rows]
         new_traj = Trajectory(new_df, traj.id)
         return new_traj
