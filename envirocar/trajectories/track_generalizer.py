@@ -19,7 +19,7 @@ class TrackGeneralizer:
         """
         self.traj = traj
 
-    def generalize(self, tolerance):
+    def generalize(self, tolerance, maintainAverageOfColumns):
         """
         Generalize the input Trajectory/TrajectoryCollection.
         Parameters
@@ -32,21 +32,21 @@ class TrackGeneralizer:
             Generalized Trajectory or TrajectoryCollection
         """
         if isinstance(self.traj, Trajectory):
-            return self._generalize_traj(self.traj, tolerance)
+            return self._generalize_traj(self.traj, tolerance, maintainAverageOfColumns)
         elif isinstance(self.traj, TrajectoryCollection):
-            return self._generalize_traj_collection(tolerance)
+            return self._generalize_traj_collection(tolerance, maintainAverageOfColumns)
         else:
             raise TypeError
 
-    def _generalize_traj_collection(self, tolerance):
+    def _generalize_traj_collection(self, tolerance, maintainAverageOfColumns):
         generalized = []
         for traj in self.traj.trajectories:
-            generalized.append(self._generalize_traj(traj, tolerance))
+            generalized.append(self._generalize_traj(traj, tolerance, maintainAverageOfColumns))
         result = copy(self.traj)
         result.trajectories = generalized
         return result
 
-    def _generalize_traj(self, traj, tolerance):
+    def _generalize_traj(self, traj, tolerance, maintainAverageOfColumns):
         return traj
 
 
@@ -61,7 +61,7 @@ class MinDistanceGeneralizer(TrackGeneralizer):
     >>> mpd.MinDistanceGeneralizer(traj).generalize(tolerance=1.0)
     """
 
-    def _generalize_traj(self, traj, tolerance):
+    def _generalize_traj(self, traj, tolerance, maintainAverageOfColumns):
         temp_df = traj.df.copy()
         prev_pt = temp_df.iloc[0][traj.get_geom_column_name()]
         keep_rows = [0]
@@ -95,7 +95,7 @@ class MinTimeDeltaGeneralizer(TrackGeneralizer):
     >>> mpd.MinTimeDeltaGeneralizer(traj).generalize(tolerance=timedelta(minutes=10))
     """
 
-    def _generalize_traj(self, traj, tolerance):
+    def _generalize_traj(self, traj, tolerance, maintainAverageOfColumns):
         temp_df = traj.df.copy()
         temp_df['t'] = temp_df.index
         prev_t = temp_df.head(1)['t'][0]
@@ -128,7 +128,7 @@ class MaxDistanceGeneralizer(TrackGeneralizer):
     >>> mpd.MaxDistanceGeneralizer(traj).generalize(tolerance=1.0)
     """
 
-    def _generalize_traj(self, traj, tolerance):
+    def _generalize_traj(self, traj, tolerance, maintainAverageOfColumns):
         prev_pt = None
         pts = []
         keep_rows = []
@@ -166,10 +166,11 @@ class DouglasPeuckerGeneralizer(TrackGeneralizer):
     >>> mpd.DouglasPeuckerGeneralizer(traj).generalize(tolerance=1.0)
     """
 
-    def _generalize_traj(self, traj, tolerance):
+    def _generalize_traj(self, traj, tolerance, maintainAverageOfColumns):
         prev_pt = None
         pts = []
         keep_rows = []
+        discard_rows = []
         i = 0
 
         for index, row in traj.df.iterrows():
@@ -177,6 +178,7 @@ class DouglasPeuckerGeneralizer(TrackGeneralizer):
             if prev_pt is None:
                 prev_pt = current_pt
                 keep_rows.append(i)
+                print('keeping row {0}'.format(i))
                 continue
             line = LineString([prev_pt, current_pt])
             for pt in pts:
@@ -185,10 +187,24 @@ class DouglasPeuckerGeneralizer(TrackGeneralizer):
                     pts = []
                     keep_rows.append(i)
                     continue
+                else:
+                    if not i in discard_rows:
+                        print('discarding row {0}'.format(i))
+                        discard_rows.append(i)
             pts.append(current_pt)
-            i += 1
-
+            i += 1        
         keep_rows.append(i)
+        rowCount = len(traj.df.index)
+        for rowIndex in discard_rows:
+            for colName in maintainAverageOfColumns:
+                value = traj.df.iloc[rowIndex][colName]
+                if (rowIndex > 0):
+                    traj.df.iloc[rowIndex - 1][colName] += value / 2
+                if (rowIndex < rowCount - 1):
+                    traj.df.iloc[rowIndex + 1][colName] += value / 2
+
         new_df = traj.df.iloc[keep_rows]
+        # discarded_df = traj.df.drop([new_df.index])
+        # print('discarded df {0}'.format(discarded_df))
         new_traj = Trajectory(new_df, traj.id)
         return new_traj
