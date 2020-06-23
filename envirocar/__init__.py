@@ -6,3 +6,4 @@ from .trajectories.preprocessing import Preprocessing
 from .trajectories.preprocessing import GeneralizationType
 from .trajectories.track_converter import TrackConverter
 from .trajectories.track_similarity import TrackSimilarity
+from .trajectories.track_generalizer import TrackGeneralizer, MinDistanceGeneralizer, MaxDistanceGeneralizer, DouglasPeuckerGeneralizer

@@ -585,6 +585,9 @@ class Preprocessing():
 
         return traj.generalize(generalizationMode, tolerance)
 
+    # def _find_average(self, traj, columnName):
+    #     traj['CO2'].avg()
+
     def generalize_v04(self, traj, tolerance, generalizationType):
         """ Generalizes the moving pandas trajectory or trajectory collection. 
         Note: This function will only work with movingpandas v0.4-rc1 and above. See https://github.com/anitagraser/movingpandas/issues/73
