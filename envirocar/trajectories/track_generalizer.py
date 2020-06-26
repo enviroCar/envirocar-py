@@ -19,34 +19,36 @@ class TrackGeneralizer:
         """
         self.traj = traj
 
-    def generalize(self, tolerance, maintainAverageOfColumns):
+    def generalize(self, tolerance, columnNamesToMaintainAverage):
         """
         Generalize the input Trajectory/TrajectoryCollection.
         Parameters
         ----------
         tolerance : any type
             Tolerance threshold, differs by generalizer
+        columnNamesToMaintainAverage: list
+            List of column names as strings to maintain the average
         Returns
         -------
         Trajectory/TrajectoryCollection
             Generalized Trajectory or TrajectoryCollection
         """
         if isinstance(self.traj, Trajectory):
-            return self._generalize_traj(self.traj, tolerance, maintainAverageOfColumns)
+            return self._generalize_traj(self.traj, tolerance, columnNamesToMaintainAverage)
         elif isinstance(self.traj, TrajectoryCollection):
-            return self._generalize_traj_collection(tolerance, maintainAverageOfColumns)
+            return self._generalize_traj_collection(tolerance, columnNamesToMaintainAverage)
         else:
             raise TypeError
 
-    def _generalize_traj_collection(self, tolerance, maintainAverageOfColumns):
+    def _generalize_traj_collection(self, tolerance, columnNamesToMaintainAverage):
         generalized = []
         for traj in self.traj.trajectories:
-            generalized.append(self._generalize_traj(traj, tolerance, maintainAverageOfColumns))
+            generalized.append(self._generalize_traj(traj, tolerance, columnNamesToMaintainAverage))
         result = copy(self.traj)
         result.trajectories = generalized
         return result
 
-    def _generalize_traj(self, traj, tolerance, maintainAverageOfColumns):
+    def _generalize_traj(self, traj, tolerance, columnNamesToMaintainAverage):
         return traj
 
 
@@ -166,15 +168,15 @@ class DouglasPeuckerGeneralizer(TrackGeneralizer):
     >>> mpd.DouglasPeuckerGeneralizer(traj).generalize(tolerance=1.0)
     """
 
-    def _generalize_traj(self, traj, tolerance, maintainAverageOfColumns):
+    def _generalize_traj(self, traj, tolerance, columnNamesToMaintainAverage):
         prev_pt = None
         pts = []
         keep_rows = []
-        discard_rows = []
         i = 0
-
-        for index, row in traj.df.iterrows():
+        trajCopy = copy(traj)
+        for index, row in trajCopy.df.iterrows():
             current_pt = row.geometry
+            # Handle first row and skip the loop
             if prev_pt is None:
                 prev_pt = current_pt
                 keep_rows.append(i)
@@ -187,24 +189,24 @@ class DouglasPeuckerGeneralizer(TrackGeneralizer):
                     pts = []
                     keep_rows.append(i)
                     continue
-                else:
-                    if not i in discard_rows:
-                        print('discarding row {0}'.format(i))
-                        discard_rows.append(i)
             pts.append(current_pt)
-            i += 1        
+            i += 1
+        # Keep the last row
         keep_rows.append(i)
-        rowCount = len(traj.df.index)
-        for rowIndex in discard_rows:
-            for colName in maintainAverageOfColumns:
-                value = traj.df.iloc[rowIndex][colName]
-                if (rowIndex > 0):
-                    traj.df.iloc[rowIndex - 1][colName] += value / 2
-                if (rowIndex < rowCount - 1):
-                    traj.df.iloc[rowIndex + 1][colName] += value / 2
+        for i, rowIndex in enumerate(keep_rows):
+            if (i != len(keep_rows) - 1):            
+                nextRowIndex = keep_rows[i + 1]
+                if (nextRowIndex - rowIndex > 1):
+                    discardedRows = trajCopy.df.iloc[rowIndex + 1 : nextRowIndex - 1]
+                    discardedRowsSelectedColumns = discardedRows[columnNamesToMaintainAverage]
+                    discardedRowsSelectedColumnsSum = discardedRowsSelectedColumns.sum() / 2
+                    aboveRow = trajCopy.df.iloc[rowIndex]
+                    belowRow = trajCopy.df.iloc[nextRowIndex]
+                    aboveRow[columnNamesToMaintainAverage] = aboveRow[columnNamesToMaintainAverage] + discardedRowsSelectedColumnsSum
+                    belowRow[columnNamesToMaintainAverage] = belowRow[columnNamesToMaintainAverage] + discardedRowsSelectedColumnsSum
+                    trajCopy.df.iloc[rowIndex] = aboveRow
+                    trajCopy.df.iloc[nextRowIndex] = belowRow
 
-        new_df = traj.df.iloc[keep_rows]
-        # discarded_df = traj.df.drop([new_df.index])
-        # print('discarded df {0}'.format(discarded_df))
+        new_df = trajCopy.df.iloc[keep_rows]
         new_traj = Trajectory(new_df, traj.id)
         return new_traj
