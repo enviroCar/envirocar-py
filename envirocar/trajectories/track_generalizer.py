@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from copy import copy
+from copy import deepcopy
 from shapely.geometry import LineString
 
 from movingpandas import Trajectory, TrajectoryCollection
@@ -173,14 +173,13 @@ class DouglasPeuckerGeneralizer(TrackGeneralizer):
         pts = []
         keep_rows = []
         i = 0
-        trajCopy = copy(traj)
+        trajCopy = deepcopy(traj)
         for index, row in trajCopy.df.iterrows():
             current_pt = row.geometry
             # Handle first row and skip the loop
             if prev_pt is None:
                 prev_pt = current_pt
                 keep_rows.append(i)
-                print('keeping row {0}'.format(i))
                 continue
             line = LineString([prev_pt, current_pt])
             for pt in pts:
@@ -193,20 +192,21 @@ class DouglasPeuckerGeneralizer(TrackGeneralizer):
             i += 1
         # Keep the last row
         keep_rows.append(i)
+        
+        # Distribute the selected values of dropped rows to the neighboring rows
         for i, rowIndex in enumerate(keep_rows):
-            if (i != len(keep_rows) - 1):            
+            if (i < len(keep_rows) - 1 and keep_rows[i + 1] - rowIndex > 1):
                 nextRowIndex = keep_rows[i + 1]
-                if (nextRowIndex - rowIndex > 1):
-                    discardedRows = trajCopy.df.iloc[rowIndex + 1 : nextRowIndex - 1]
-                    discardedRowsSelectedColumns = discardedRows[columnNamesToMaintainAverage]
-                    discardedRowsSelectedColumnsSum = discardedRowsSelectedColumns.sum() / 2
-                    aboveRow = trajCopy.df.iloc[rowIndex]
-                    belowRow = trajCopy.df.iloc[nextRowIndex]
-                    aboveRow[columnNamesToMaintainAverage] = aboveRow[columnNamesToMaintainAverage] + discardedRowsSelectedColumnsSum
-                    belowRow[columnNamesToMaintainAverage] = belowRow[columnNamesToMaintainAverage] + discardedRowsSelectedColumnsSum
-                    trajCopy.df.iloc[rowIndex] = aboveRow
-                    trajCopy.df.iloc[nextRowIndex] = belowRow
+                discardedRows = trajCopy.df.iloc[rowIndex + 1 : nextRowIndex]
+                discardedRowsSelectedColumns = discardedRows[columnNamesToMaintainAverage]
+                discardedRowsSelectedColumnsSum = discardedRowsSelectedColumns.sum()
+                aboveRow = trajCopy.df.iloc[rowIndex]
+                belowRow = trajCopy.df.iloc[nextRowIndex]
+                aboveRow[columnNamesToMaintainAverage] = aboveRow[columnNamesToMaintainAverage] + (discardedRowsSelectedColumnsSum/2)
+                belowRow[columnNamesToMaintainAverage] = belowRow[columnNamesToMaintainAverage] + (discardedRowsSelectedColumnsSum/2)
+                trajCopy.df.iloc[rowIndex] = aboveRow
+                trajCopy.df.iloc[nextRowIndex] = belowRow
 
         new_df = trajCopy.df.iloc[keep_rows]
-        new_traj = Trajectory(new_df, traj.id)
+        new_traj = Trajectory(new_df, trajCopy.id)
         return new_traj
