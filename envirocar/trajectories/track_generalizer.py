@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from copy import deepcopy
+from copy import copy, deepcopy
 from shapely.geometry import LineString
 
 from movingpandas import Trajectory, TrajectoryCollection
@@ -51,7 +51,6 @@ class TrackGeneralizer:
     def _generalize_traj(self, traj, tolerance, columnNamesToMaintainAverage):
         return traj
 
-
 class MinDistanceGeneralizer(TrackGeneralizer):
     """
     Generalizes based on distance.
@@ -63,13 +62,13 @@ class MinDistanceGeneralizer(TrackGeneralizer):
     >>> mpd.MinDistanceGeneralizer(traj).generalize(tolerance=1.0)
     """
 
-    def _generalize_traj(self, traj, tolerance, maintainAverageOfColumns):
+    def _generalize_traj(self, traj, tolerance, columnNamesToMaintainAverage):
         temp_df = traj.df.copy()
         prev_pt = temp_df.iloc[0][traj.get_geom_column_name()]
         keep_rows = [0]
         i = 0
-
-        for index, row in temp_df.iterrows():
+        trajCopy = deepcopy(traj)
+        for index, row in trajCopy.df.iterrows():
             pt = row[traj.get_geom_column_name()]
             if traj.is_latlon:
                 dist = measure_distance_spherical(pt, prev_pt)
@@ -81,8 +80,21 @@ class MinDistanceGeneralizer(TrackGeneralizer):
             i += 1
 
         keep_rows.append(len(traj.df)-1)
-        new_df = traj.df.iloc[keep_rows]
-        new_traj = Trajectory(new_df, traj.id)
+        # Distribute the selected values of dropped rows to the neighboring rows
+        for i, rowIndex in enumerate(keep_rows):
+            if (i < len(keep_rows) - 1 and keep_rows[i + 1] - rowIndex > 1):
+                nextRowIndex = keep_rows[i + 1]
+                discardedRows = trajCopy.df.iloc[rowIndex + 1 : nextRowIndex]
+                discardedRowsSelectedColumns = discardedRows[columnNamesToMaintainAverage]
+                discardedRowsSelectedColumnsSum = discardedRowsSelectedColumns.sum()
+                aboveRow = trajCopy.df.iloc[rowIndex]
+                belowRow = trajCopy.df.iloc[nextRowIndex]
+                aboveRow[columnNamesToMaintainAverage] = aboveRow[columnNamesToMaintainAverage] + (discardedRowsSelectedColumnsSum/2)
+                belowRow[columnNamesToMaintainAverage] = belowRow[columnNamesToMaintainAverage] + (discardedRowsSelectedColumnsSum/2)
+                trajCopy.df.iloc[rowIndex] = aboveRow
+                trajCopy.df.iloc[nextRowIndex] = belowRow
+        new_df = trajCopy.df.iloc[keep_rows]
+        new_traj = Trajectory(new_df, trajCopy.id)
         return new_traj
 
 
@@ -97,14 +109,14 @@ class MinTimeDeltaGeneralizer(TrackGeneralizer):
     >>> mpd.MinTimeDeltaGeneralizer(traj).generalize(tolerance=timedelta(minutes=10))
     """
 
-    def _generalize_traj(self, traj, tolerance, maintainAverageOfColumns):
+    def _generalize_traj(self, traj, tolerance, columnNamesToMaintainAverage):
         temp_df = traj.df.copy()
         temp_df['t'] = temp_df.index
         prev_t = temp_df.head(1)['t'][0]
         keep_rows = [0]
         i = 0
-
-        for index, row in temp_df.iterrows():
+        trajCopy = deepcopy(traj)
+        for index, row in trajCopy.df.iterrows():
             t = row['t']
             tdiff = t - prev_t
             if tdiff >= tolerance:
@@ -113,8 +125,21 @@ class MinTimeDeltaGeneralizer(TrackGeneralizer):
             i += 1
 
         keep_rows.append(len(traj.df)-1)
-        new_df = traj.df.iloc[keep_rows]
-        new_traj = Trajectory(new_df, traj.id)
+        # Distribute the selected values of dropped rows to the neighboring rows
+        for i, rowIndex in enumerate(keep_rows):
+            if (i < len(keep_rows) - 1 and keep_rows[i + 1] - rowIndex > 1):
+                nextRowIndex = keep_rows[i + 1]
+                discardedRows = trajCopy.df.iloc[rowIndex + 1 : nextRowIndex]
+                discardedRowsSelectedColumns = discardedRows[columnNamesToMaintainAverage]
+                discardedRowsSelectedColumnsSum = discardedRowsSelectedColumns.sum()
+                aboveRow = trajCopy.df.iloc[rowIndex]
+                belowRow = trajCopy.df.iloc[nextRowIndex]
+                aboveRow[columnNamesToMaintainAverage] = aboveRow[columnNamesToMaintainAverage] + (discardedRowsSelectedColumnsSum/2)
+                belowRow[columnNamesToMaintainAverage] = belowRow[columnNamesToMaintainAverage] + (discardedRowsSelectedColumnsSum/2)
+                trajCopy.df.iloc[rowIndex] = aboveRow
+                trajCopy.df.iloc[nextRowIndex] = belowRow
+        new_df = trajCopy.df.iloc[keep_rows]
+        new_traj = Trajectory(new_df, trajCopy.id)
         return new_traj
 
 
@@ -130,14 +155,14 @@ class MaxDistanceGeneralizer(TrackGeneralizer):
     >>> mpd.MaxDistanceGeneralizer(traj).generalize(tolerance=1.0)
     """
 
-    def _generalize_traj(self, traj, tolerance, maintainAverageOfColumns):
+    def _generalize_traj(self, traj, tolerance, columnNamesToMaintainAverage):
         prev_pt = None
         pts = []
         keep_rows = []
         i = 0
-
-        for index, row in traj.df.iterrows():
-            current_pt = row[traj.get_geom_column_name()]
+        trajCopy = deepcopy(traj)
+        for index, row in trajCopy.df.iterrows():
+            current_pt = row[trajCopy.get_geom_column_name()]
             if prev_pt is None:
                 prev_pt = current_pt
                 keep_rows.append(i)
@@ -153,8 +178,23 @@ class MaxDistanceGeneralizer(TrackGeneralizer):
             i += 1
 
         keep_rows.append(i)
-        new_df = traj.df.iloc[keep_rows]
-        new_traj = Trajectory(new_df, traj.id)
+
+        # Distribute the selected values of dropped rows to the neighboring rows
+        for i, rowIndex in enumerate(keep_rows):
+            if (i < len(keep_rows) - 1 and keep_rows[i + 1] - rowIndex > 1):
+                nextRowIndex = keep_rows[i + 1]
+                discardedRows = trajCopy.df.iloc[rowIndex + 1 : nextRowIndex]
+                discardedRowsSelectedColumns = discardedRows[columnNamesToMaintainAverage]
+                discardedRowsSelectedColumnsSum = discardedRowsSelectedColumns.sum()
+                aboveRow = trajCopy.df.iloc[rowIndex]
+                belowRow = trajCopy.df.iloc[nextRowIndex]
+                aboveRow[columnNamesToMaintainAverage] = aboveRow[columnNamesToMaintainAverage] + (discardedRowsSelectedColumnsSum/2)
+                belowRow[columnNamesToMaintainAverage] = belowRow[columnNamesToMaintainAverage] + (discardedRowsSelectedColumnsSum/2)
+                trajCopy.df.iloc[rowIndex] = aboveRow
+                trajCopy.df.iloc[nextRowIndex] = belowRow
+
+        new_df = trajCopy.df.iloc[keep_rows]
+        new_traj = Trajectory(new_df, trajCopy.id)
         return new_traj
 
 
