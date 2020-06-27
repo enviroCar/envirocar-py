@@ -19,11 +19,6 @@ import json
 from branca.colormap import linear
 import enum
 
-class GeneralizationType(enum.Enum):
-    DouglasPeucker = 0
-    MinDistance = 1
-    MinTimeDelta = 2
-
 class Preprocessing():
     def __init__(self):
         print("Initializing pre-processing class")   # do we need anything?
