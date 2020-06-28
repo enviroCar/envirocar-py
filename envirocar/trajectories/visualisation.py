@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import datetime
 import folium
 import random
+import seaborn as sns
+import pandas as pd
 import movingpandas as mpd
 from statistics import mean
 from shapely.geometry import Point, LineString, Polygon
@@ -12,6 +14,15 @@ class Visualiser():
         print("Initializing visualisation class")   # do we need anything?
 
     def st_cube_simple(self, points):
+        """ To plot a space-time cube of one trajectory. Checks for the start time
+        and calculates seconds passed from it for every next point
+
+        Keyword Arguments:
+            points {dataframe} -- A Pandas dataframe of a trajectory
+        Returns:
+            No Return
+        """
+
         def seconds_from_start(x, start):
             date_time_obj = datetime.datetime.strptime(x, '%Y-%m-%dT%H:%M:%S')
             seconds = (date_time_obj-start).total_seconds()
@@ -34,6 +45,57 @@ class Visualiser():
         ax.set_zlabel('Seconds since start')
         fig.canvas.set_window_title('Space-Time Cube')
         plt.show()
+
+    def plot_full_correlation(self, points_df):
+        """ To plot a correlation matrix for all columns that contain word
+        '.value' in their name
+
+        Keyword Arguments:
+            points_df {dataframe} -- A Pandas dataframe of a trajectory
+        Returns:
+            No Return
+        """
+
+        value_names = [s for s in points_df.columns if
+                       '.value' in s]
+
+        value_columns = [np.array(
+            points_df[column].values.tolist()) for column
+            in value_names]
+
+        values_transposed = np.transpose(value_columns)
+
+        values_df = pd.DataFrame(values_transposed)
+        values_df.columns = value_names
+
+        f, ax = plt.subplots(figsize=(10, 8))
+        corr = values_df.corr()
+        sns.heatmap(corr, mask=np.zeros_like(corr, dtype=np.bool),
+                    cmap=sns.diverging_palette(220, 10, as_cmap=True),
+                    square=True, ax=ax)
+
+    def plot_pair_correlation(self, points_df, column_1, column_2):
+        """ To plot a pairwise relationship in a dataset.
+        Special case for the Acceleration values to see difference
+        (if any) between accelerating and braking.
+
+        Keyword Arguments:
+            points_df {dataframe} -- A Pandas dataframe of a trajectory
+            column_1, column_2 {string} -- names of 2 columns to analyse
+        Returns:
+            No Return
+        """
+
+        if (column_2 == "Acceleration.value" or
+                column_1 == "Acceleration.value"):
+            df1 = points_df[points_df["Acceleration.value"] > 0]
+            df2 = points_df[points_df["Acceleration.value"] < 0]
+
+            sns.pairplot(df1, vars=[column_1, column_2])
+            sns.pairplot(df2, vars=[column_1, column_2])
+
+        else:
+            sns.pairplot(points_df, vars=[column_1, column_2])
 
     def create_map(self, trajectories):
         """ To create a Folium Map object (in case its not already available)
