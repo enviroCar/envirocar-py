@@ -16,13 +16,7 @@ import movingpandas as mpd
 from shapely.geometry import Polygon
 import json
 from branca.colormap import linear
-import enum
-
-
-class GeneralizationType(enum.Enum):
-    DouglasPeucker = 0
-    MinDistance = 1
-    MinTimeDelta = 2
+# import enum
 
 
 class Preprocessing():
@@ -661,50 +655,3 @@ class Preprocessing():
         result.trajectories = filtered
 
         return result
-
-    def generalize(self, traj, tolerance, generalizationMode):
-        """ Generalize the trajectory/trajectory collection
-
-        Supported generalization modes include:
-
-        - ‘douglas-peucker’ (tolerance as float in CRS units or meters if CRS
-            is geographic, e.g. EPSG:4326 WGS84)
-        - ‘min-time-delta’ (tolerance as datetime.timedelta)
-        - ‘min-distance’ (tolerance as float in CRS units or meters if CRS is
-            geographic, e.g. EPSG:4326 WGS84)
-
-        Returns:
-            moving pandas trajectory/trajectory collection
-        """
-
-        return traj.generalize(generalizationMode, tolerance)
-
-    def generalize_v04(self, traj, tolerance, generalizationType):
-        """ Generalizes the moving pandas trajectory or trajectory collection.
-        Note: This function will only work with movingpandas v0.4-rc1 and above
-        See https://github.com/anitagraser/movingpandas/issues/73
-
-        Keyword Arguments:
-            traj -- movingpandas trajectory/trajectory collection
-            tolerance -- tolerance from 0 to 1. Specify minutes incase of
-            MinTimDelta generalization type
-            generalizationType -- type of generalization e.g. Douglas Peucker,
-            Min Distance, or Min Time Delta
-
-        Returns:
-            moving pandas trajectory or trajectory collection
-        """
-
-        if (not isinstance(generalizationType, GeneralizationType)):
-            raise ValueError("Invalid generalization type " + str(
-                             generalizationType))
-
-        if generalizationType.value == GeneralizationType.DouglasPeucker.value:
-            return mpd.DouglasPeuckerGeneralizer(traj).generalize(
-                tolerance=tolerance)
-        elif generalizationType.value == GeneralizationType.MinDistance.value:
-            return mpd.MinDistanceGeneralizer(traj).generalize(
-                tolerance=tolerance)
-        elif generalizationType.value == GeneralizationType.MinTimeDelta.value:
-            return mpd.MinTimeDeltaGeneralizer(traj).generalize(
-                tolerance=datetime.timedelta(minutes=tolerance))
