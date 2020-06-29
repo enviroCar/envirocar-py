@@ -12,9 +12,7 @@ from copy import copy
 
 import folium
 import movingpandas as mpd
-from copy import copy
 from shapely.geometry import Point, LineString, Polygon
-import geopandas as gpd
 import json
 from branca.colormap import linear
 import enum
@@ -45,11 +43,38 @@ class Preprocessing():
     # Splitting Trajectories based on time gap between records to extract Trips
     def split_by_gap (self, TRAJ_COLLECTION, MIN_GAP):
         traj_collection = TRAJ_COLLECTION
-        
+
         # using moving pandas function to split trajectories as 'trips'
         trips = traj_collection.split_by_observation_gap(datetime.timedelta(minutes=MIN_GAP))
         print("Extracted {} individual trips from {} continuous vehicle tracks".format(len(trips), len(traj_collection)))
         return trips
+
+    def calculateAcceleration(self, points_df):
+        points_df['t'] = pd.to_datetime(
+             points_df['time'], format='%Y-%m-%dT%H:%M:%S')
+
+        time_arr = points_df['t'].tolist()
+        speed_arr = points_df['Speed.value'].to_numpy()
+        acceleration_array = [0]
+
+        for i in range(1, len(time_arr)):
+            # using speed not to calculate velocity because we don't care
+            # about direction anyway
+            velocity_change = speed_arr[i] - speed_arr[i-1]
+            time_change = (time_arr[i] - time_arr[i-1]).total_seconds()
+
+            if (time_change != 0):
+                acceleration = (velocity_change / time_change)
+            else:
+                acceleration = 0
+
+            # print(velocity_change, time_change, acceleration)
+            acceleration_array.append(acceleration)
+
+        points_df['Acceleration.value'] = acceleration_array
+
+        return points_df
+        
 
     def remove_outliers(self, points, column):
         """ Remove outliers by using the statistical approach
