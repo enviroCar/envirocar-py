@@ -196,7 +196,7 @@ class Visualiser():
             return hex_number
         
         #Call to function to iterate over trajectory collection and return individual track points
-        traj_list = get_trajectories_coords(trajectory_collection)
+        traj_list = self.get_trajectories_coords(trajectory_collection)
         
         traj_index = 0  
         for traj in traj_list:
@@ -303,10 +303,10 @@ class Visualiser():
             No Return
         """
         #Call to function to extract daywise lengths
-        daywise_length = extract_daywise_lengths(week_trajectories)
+        daywise_length = self.extract_daywise_lengths(week_trajectories)
         
         #Call to function to extract attributes for plot
-        day, height, highest, highest_index, average = extract_barplot_info(daywise_length)
+        day, height, highest, highest_index, average = self.extract_barplot_info(daywise_length)
         
         bar_plot = plt.bar(day, height, color=(0.1, 0.1, 0.1, 0.1),  edgecolor='blue')
         bar_plot[highest_index].set_edgecolor('r')
