@@ -310,6 +310,6 @@ class DouglasPeuckerGeneralizer(TrackGeneralizer):
                     trajCopy.df.iloc[rowIndex] = aboveRow
                     trajCopy.df.iloc[nextRowIndex] = belowRow
 
-        new_df = trajCopy.df.iloc[keep_rows]
+        new_df = trajCopy.df.iloc[keep_rows]        
         new_traj = Trajectory(new_df, trajCopy.id)
         return new_traj
