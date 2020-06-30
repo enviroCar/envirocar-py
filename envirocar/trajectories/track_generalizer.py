@@ -117,6 +117,9 @@ class MinDistanceGeneralizer(TrackGeneralizer):
                     trajCopy.df.iloc[nextRowIndex] = belowRow
 
         new_df = trajCopy.df.iloc[keep_rows]
+        removedRowsCount = len(traj.df.index) - len(keep_rows)
+        new_columns = {'Generalized': True, 'Generalization.Method': 'Min-Distance', 'Generalization.RemovedRowsCount': removedRowsCount}
+        new_df = new_df.assign(**new_columns)  
         new_traj = Trajectory(new_df, trajCopy.id)
         return new_traj
 
@@ -178,6 +181,9 @@ class MinTimeDeltaGeneralizer(TrackGeneralizer):
                     trajCopy.df.iloc[nextRowIndex] = belowRow
 
         new_df = trajCopy.df.iloc[keep_rows]
+        removedRowsCount = len(traj.df.index) - len(keep_rows)
+        new_columns = {'Generalized': True, 'Generalization.Method': 'Min-Time-Delta', 'Generalization.RemovedRowsCount': removedRowsCount}
+        new_df = new_df.assign(**new_columns)  
         new_traj = Trajectory(new_df, trajCopy.id)
         return new_traj
 
@@ -245,6 +251,9 @@ class MaxDistanceGeneralizer(TrackGeneralizer):
                     trajCopy.df.iloc[nextRowIndex] = belowRow
 
         new_df = trajCopy.df.iloc[keep_rows]
+        removedRowsCount = len(traj.df.index) - len(keep_rows)
+        new_columns = {'Generalized': True, 'Generalization.Method': 'Max-Distance', 'Generalization.RemovedRowsCount': removedRowsCount}
+        new_df = new_df.assign(**new_columns)    
         new_traj = Trajectory(new_df, trajCopy.id)
         return new_traj
 
@@ -309,7 +318,10 @@ class DouglasPeuckerGeneralizer(TrackGeneralizer):
                         discardedRowsSelectedColumnsSum/2)
                     trajCopy.df.iloc[rowIndex] = aboveRow
                     trajCopy.df.iloc[nextRowIndex] = belowRow
-
+        
         new_df = trajCopy.df.iloc[keep_rows]        
+        removedRowsCount = len(traj.df.index) - len(keep_rows)
+        new_columns = {'Generalized': True, 'Generalization.Method': 'Douglas-Peucker', 'Generalization.RemovedRowsCount': removedRowsCount}
+        new_df = new_df.assign(**new_columns)    
         new_traj = Trajectory(new_df, trajCopy.id)
         return new_traj
