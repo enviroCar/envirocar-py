@@ -31,12 +31,6 @@ def track_similarity(trajA, trajB, method):
                 similarity. Values close to 1 correspond to high similarity
         """
 
-    # trajA_id = trajA.df['track.id'].unique()[0]
-    # trajB_id = trajB.df['track.id'].unique()[0]
-
-    # print("Similarity between Track",trajA_id, "& Track",trajB_id,"using",
-    # str(method),"method:")
-
     methods = ['pcm', 'frechet_dist', 'area_between_two_curves',
                'curve_length_measure', 'dtw']
 
@@ -61,9 +55,34 @@ def track_similarity(trajA, trajB, method):
         else:
             similarity = 1/(1+similarity_method(trajA_np, trajB_np))
             return similarity
+        
+def trajCollections_similarity(trajCollectionA,trajCollectionB,method):
+    
+    n=len(trajCollectionA.trajectories)
+    m=len(trajCollectionB.trajectories)
+    
+    if(n != m):
+        raise RuntimeError('Trajectory collections should be the same size !')
 
+    traj1_name = []
+    traj2_name = []
+    similarity = []
+    
+    for i in range(n):
+        
+        traj=trajCollectionA.trajectories[i]
+        gen_traj=trajCollectionB.trajectories[i]
+        
+        traj1_name.append(traj.df['track.id'].unique()[0])
+        traj2_name.append(gen_traj.df['track.id'].unique()[0])
+        simi = track_similarity(traj,gen_traj, method)
+        similarity.append(simi)
+        
+    df = pd.DataFrame(list(zip(traj1_name, traj2_name, similarity)),
+                      columns=['Trajectory_1', 'Trajectory_2', 'Similarity'])
+    return(df)
 
-def crossed_similarity(list_traj, method):
+def crossed_similarity(trajCollection, method):
 
     """ Compute similarity measures of a list of trajectories
 
@@ -80,14 +99,19 @@ def crossed_similarity(list_traj, method):
 
         df{dataframe}            -- Dataframe with summary of similarity
                                     measuresof all posible combinations from
-                                    the trajectory list (list_traj)                                    
+                                    the trajectory list (list_traj)
+                                  
         """
 
-    n = (len(list_traj))
-
+    n = (len(trajCollection.trajectories))
+    
     if(n <= 1):
         raise RuntimeError('More than 1 trajectory is required')
-
+    
+    trajVector=[]
+    for i in (trajCollection.trajectories):
+        trajVector.append(i)
+        
     number_comb = factorial(n)/(factorial(n-2)*factorial(2))
 
     start = timer()
@@ -96,7 +120,7 @@ def crossed_similarity(list_traj, method):
     similarity = []
     i = 0
 
-    for combo in combinations(list_traj, 2):
+    for combo in combinations(trajVector, 2):
         traj1_name.append(combo[0].df['track.id'].unique()[0])
         traj2_name.append(combo[1].df['track.id'].unique()[0])
         simi = track_similarity(combo[0], combo[1], method)     
@@ -106,16 +130,24 @@ def crossed_similarity(list_traj, method):
         if (i % 10 == 0 or i == number_comb):
             print(round(i/number_comb*100, 1), "% of ", "calculations", sep='',
                   end='\r')
-
+   
     df = pd.DataFrame(list(zip(traj1_name, traj2_name, similarity)),
-                      columns=['Trajectory_1', 'Trajectory_2', 'Correlation'])
-    df = df.sort_values(by=['Correlation'], ascending=False
+                      columns=['Trajectory_1', 'Trajectory_2', 'Similarity'])
+    
+    df_2 = pd.DataFrame(list(zip(traj2_name, traj1_name, similarity)),
+                      columns=['Trajectory_1', 'Trajectory_2', 'Similarity'])
+    
+    frames = [df, df_2]
+    
+    df = pd.concat(frames, ignore_index=True)
+    
+    df = df.sort_values(by=['Similarity'], ascending=False
                         ).reset_index(drop=True)
-
     end = timer()
     time = end-start
 
     print("\n%s similarity measures in %0.2f seconds" % (i, time))
+    
     return(df)
 
 
@@ -139,17 +171,14 @@ def get_similarity_matrix(df):
     similarity_diagonal = [1] * number_uniqtraj
     df_diagonal = pd.DataFrame(list(zip(uniq_traj, uniq_traj,
                                similarity_diagonal)), columns=['Trajectory_1',
-                               'Trajectory_2', 'Correlation'])
+                               'Trajectory_2', 'Similarity'])
     frames = [df, df_diagonal]
     df = pd.concat(frames, ignore_index=True)
 
-    df = df.sort_values(by=['Correlation'], ascending=False).reset_index(
+    df = df.sort_values(by=['Similarity'], ascending=False).reset_index(
         drop=True)
-    df = df.pivot(index='Trajectory_1', columns='Trajectory_2',
-                  values='Correlation').copy()
-
-    df = df.transpose().fillna(0)+df.fillna(0)
-    df = df.replace(2, 1)
+    
+    df = df.pivot(index='Trajectory_1', columns='Trajectory_2',values='Similarity').copy()
 
     return(df)
 
@@ -162,10 +191,10 @@ def plot_similarity_matrix(df_similarity_matrix, title):
         df{dataframe}      -- Similarity matrix of trajectories
         """
 
-    sum_corr = list(df_similarity_matrix.sum().sort_values(
-        ascending=True).index.values)
-    df = df_similarity_matrix.sort_values(by=sum_corr).sort_index(
-        axis=0, level=sum_corr)
+    sum_corr = list(df_similarity_matrix.sum().sort_values(ascending=True).index.values)
+    df_similarity_matrix=df_similarity_matrix[sum_corr]
+    df=df_similarity_matrix.reindex(sum_corr)
+    
     f = plt.figure(figsize=(19, 15))
     plt.matshow(df, fignum=f.number)
     plt.title(title, y=1.2, fontsize=25)
