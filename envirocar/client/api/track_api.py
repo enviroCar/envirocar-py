@@ -38,12 +38,17 @@ class TrackAPI():
                 'limit': page_limit,
                 'page': current_page
             }
+
             if bbox:
                 request_params.update(bbox.param)
+                
+            if time_interval:
+               request_params.update(time_interval.param)
+
 
             request = RequestParam(path=path, params=request_params)
             download_requests.append(request)
-            
+            print(request)
             current_results += page_limit
             current_page += 1
 

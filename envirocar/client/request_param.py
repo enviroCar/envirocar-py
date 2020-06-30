@@ -34,3 +34,15 @@ class RequestParam:
         self.method = method
         self.headers = headers or []
         self.params = params or []
+
+class car():
+    def __init__(self, mass=1500, car_cross_sectional=2, Air_drag_cofficient=0.3, Calorific_value= 8.8, Idle_power= 2):
+        self.m = mass
+        self.A = car_cross_sectional
+        self.Cw = Air_drag_cofficient
+        self.H_g = Calorific_value
+        self.P_idle = Idle_power
+class road():
+    def __init__(self, rolling_resistance_cofficient = 0.02):
+        self.Cr = rolling_resistance_cofficient
+    
