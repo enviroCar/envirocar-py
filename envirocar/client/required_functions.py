@@ -16,7 +16,11 @@ def generate_parms(one_track,s,e):
 def request(link):
     elevation = req.request('GET',link)
     results = elevation.json()['results']
-    h = list(map(lambda x : x['elevation'], results))
+    status =elevation.json()['status']
+    if status=='OK':
+        h = list(map(lambda x : x['elevation'], results))
+    else:
+        h= None
     return h
 
 ## Calculate he ditance between the two gps record/
