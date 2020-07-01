@@ -17,6 +17,8 @@ class consumption():
         url = 'https://api.opentopodata.org/v1/eudem25m?locations='
         tracks = pd.DataFrame(columns=track_df.columns)
 
+        # Add surface in get attribute method
+        ox.settings.useful_tags_way = ['bridge', 'tunnel', 'oneway', 'lanes', 'ref', 'name','highway', 'maxspeed', 'service', 'access', 'area','landuse', 'width', 'est_width', 'junction', 'surface']
         # get the osm graph for the same area
         G = ox.graph_from_bbox(osmbox.max_y, osmbox.min_y, osmbox.max_x, osmbox.min_x, network_type='drive')  
 
@@ -44,10 +46,16 @@ class consumption():
                 parms= generate_parms(one_track,s,e)
                 access= url+parms
                 part = request(access)
+                if part==None:
+                    part=[np.nan]*(e+1-s)    
                 elevation.extend(part)
                 time.sleep(1)
             one_track['elevation']=elevation
-
+            # Filterout the null value
+            temp=one_track[one_track['elevation'].isnull()==True]
+            if len(temp)> 0:
+                for i in temp.index:
+                    one_track.loc[i,'elevation']=one_track.loc[i,'GPS Altitude.value']
             # Match the graph with osm and get maxspeed & surface attriubutes
             for i in one_track.index:
                 lat= one_track.loc[i,'geometry'].y
@@ -62,7 +70,8 @@ class consumption():
                 if "surface" in dic:
                     one_track.loc[i,"surface"] = dic["surface"]
                 else:
-                    one_track.loc[i,"surface"] = one_track.loc[i-1,"surface"]
+                    s = one_track.loc[i-1,"surface"] if i>0 else one_track.loc[i+1,"surface"]
+                    one_track.loc[i,"surface"] =  s
 
                 # get the rolling resistance cofficient
                 if one_track.loc[i, 'surface'] == "asphalt":
