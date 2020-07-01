@@ -55,27 +55,62 @@ class Preprocessing():
         points_df['t'] = pd.to_datetime(
              points_df['time'], format='%Y-%m-%dT%H:%M:%S')
 
-        time_arr = points_df['t'].tolist()
-        speed_arr = points_df['Speed.value'].to_numpy()
-        acceleration_array = [0]
+        dict_of_tracks = dict(iter(points_df.groupby('track.id')))
 
-        for i in range(1, len(time_arr)):
-            # using speed not to calculate velocity because we don't care
-            # about direction anyway
-            velocity_change = speed_arr[i] - speed_arr[i-1]
-            time_change = (time_arr[i] - time_arr[i-1]).total_seconds()
+        for track_id in dict_of_tracks:
+            time_arr = dict_of_tracks[track_id]['t'].tolist()
+            speed_arr = dict_of_tracks[track_id]['Speed.value'].to_numpy()
+            acceleration_array = [0]
 
-            if (time_change != 0):
-                acceleration = (velocity_change / time_change)
-            else:
-                acceleration = 0
+            for i in range(1, len(time_arr)):
+                # using speed not to calculate velocity because we don't care
+                # about direction anyway
+                velocity_change = speed_arr[i] - speed_arr[i-1]
+                time_change = (time_arr[i] - time_arr[i-1]).total_seconds()
 
-            # print(velocity_change, time_change, acceleration)
-            acceleration_array.append(acceleration)
+                if (time_change != 0):
+                    acceleration = (velocity_change / time_change)
+                else:
+                    acceleration = 0
 
-        points_df['Acceleration.value'] = acceleration_array
+                # print(velocity_change, time_change, acceleration)
+                acceleration_array.append(acceleration)
 
-        return points_df
+            dict_of_tracks[track_id]['Acceleration.value'] = acceleration_array
+
+        combined_again = pd.concat(dict_of_tracks.values())
+
+        return combined_again
+
+    def split_beginning(self, points_df, seconds_end):
+
+        def seconds_since_start(x, start):
+            # print(x, start)
+            if (isinstance(x, str)):
+                x = datetime.datetime.strptime(x, '%Y-%m-%dT%H:%M:%S')
+            seconds = (x-start).total_seconds()
+            return int(seconds)
+
+        dict_of_tracks = dict(iter(points_df.groupby('track.id')))
+        beginnings = []
+
+        for track_id in dict_of_tracks:
+            start_time = datetime.datetime.strptime(
+                dict_of_tracks[track_id].time.iloc[0], '%Y-%m-%dT%H:%M:%S')
+
+            dict_of_tracks[track_id]['Seconds since start'] = \
+                np.vectorize(seconds_since_start)(
+                    np.array(dict_of_tracks[track_id]['time'].values.tolist()),
+                    start_time)
+
+            beginning = dict_of_tracks[track_id][dict_of_tracks[track_id]
+                                                 ['Seconds since start']
+                                                 < seconds_end]
+            beginnings.append(beginning)
+
+        combined_again = pd.concat(beginnings)
+
+        return combined_again
 
     def remove_outliers(self, points, column):
         """ Remove outliers by using the statistical approach
@@ -90,16 +125,21 @@ class Preprocessing():
             new_points -- Points with outliers removed
         """
 
-        # print(points['time'])
-        first_quartile = points[column].quantile(0.25)
-        third_quartile = points[column].quantile(0.75)
-        iqr = third_quartile-first_quartile   # Interquartile range
-        fence_low = first_quartile - 1.5 * iqr
-        fence_high = third_quartile + 1.5 * iqr
+        if (column == "Acceleration.value"):
+            # trying to keep outliers while removing unrealistic values
+            new_points = points.loc[(points[column] > -20) & (
+                points[column] < 20)]
+        else:
+            # broader range with 0.01 and 0.99
+            first_quartile = points[column].quantile(0.01)
+            third_quartile = points[column].quantile(0.99)
+            iqr = third_quartile-first_quartile   # Interquartile range
+            fence_low = first_quartile - 1.5 * iqr
+            fence_high = third_quartile + 1.5 * iqr
 
-        new_points = points.loc[(points[column] > fence_low) & (
-            points[column] < fence_high)]
-        # print(new_points['time'])
+            new_points = points.loc[(points[column] > fence_low) & (
+                points[column] < fence_high)]
+
         return new_points
 
     def interpolate(self, points):
