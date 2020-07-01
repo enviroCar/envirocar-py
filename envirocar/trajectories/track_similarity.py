@@ -58,6 +58,24 @@ def track_similarity(trajA, trajB, method):
         
 def trajCollections_similarity(trajCollectionA,trajCollectionB,method):
     
+    """ Compute similarity measures using the similaritymeasures package
+        https://pypi.org/project/similaritymeasures/
+
+        Keyword Arguments:
+        trajCollectionA {movingpandas trajectory}  -- movingpandas trajectory
+        trajCollectionB {movingpandas trajectory}  -- movingpandas trajectory
+        method {string}                            -- Name of the method to compute
+                                                      similarity
+                                                        pcm: Partial Curve Mapping
+                                                        frechet_dist: Discrete Frechet distance
+                                                        area_between_two_curves: Area method
+                                                        curve_length_measure: Curve Length
+                                                        dtw: Dynamic Time Warping
+
+        Returns:
+        similarity dataframe                       -- Float value (0,1) corresponding to the computed similarity. 
+        """
+      
     n=len(trajCollectionA.trajectories)
     m=len(trajCollectionB.trajectories)
     
@@ -70,16 +88,28 @@ def trajCollections_similarity(trajCollectionA,trajCollectionB,method):
     
     for i in range(n):
         
-        traj=trajCollectionA.trajectories[i]
-        gen_traj=trajCollectionB.trajectories[i]
+        traj_a=trajCollectionA.trajectories[i]
+        traj_b=trajCollectionB.trajectories[i]
         
-        traj1_name.append(traj.df['track.id'].unique()[0])
-        traj2_name.append(gen_traj.df['track.id'].unique()[0])
-        simi = track_similarity(traj,gen_traj, method)
+        traj1_name.append(traj_a.df['track.id'].unique()[0])
+        traj2_name.append(traj_b.df['track.id'].unique()[0])
+            
+        simi = track_similarity(traj_a,traj_b, method)
         similarity.append(simi)
+    
+    traj_a_gen='Generalized' in traj_a.df.columns
+    traj_b_gen='Generalized' in traj_b.df.columns
+        
+    column_name_1="Trajectory_1"
+    column_name_2="Trajectory_2"
+
+    if traj_a_gen==True:
+        column_name_1="Generalized_"+column_name_1
+    if traj_b_gen==True:
+        column_name_2="Generalized_"+column_name_2
         
     df = pd.DataFrame(list(zip(traj1_name, traj2_name, similarity)),
-                      columns=['Trajectory_1', 'Trajectory_2', 'Similarity'])
+                      columns=[column_name_1,column_name_2, 'Similarity'])
     return(df)
 
 def crossed_similarity(trajCollection, method):
@@ -87,22 +117,21 @@ def crossed_similarity(trajCollection, method):
     """ Compute similarity measures of a list of trajectories
 
         Keyword Arguments:
-        list_traj {list}        -- List containing movingpandas trajectories
-        method {string}         -- Name of the method to compute similarity
-                                    pcm: Partial Curve Mapping
-                                    frechet_dist: Discrete Frechet distance
-                                    area_between_two_curves: Area method
-                                    curve_length_measure: Curve Length
-                                    dtw: Dynamic Time Warping
-
+        trajCollection {trajectoryCollection}        -- List containing movingpandas trajectories
+        method {string}                              -- Name of the method to compute similarity
+                                                        pcm: Partial Curve Mapping
+                                                        frechet_dist: Discrete Frechet distance
+                                                        area_between_two_curves: Area method
+                                                        curve_length_measure: Curve Length
+                                                        dtw: Dynamic Time Warping
         Returns:
 
-        df{dataframe}            -- Dataframe with summary of similarity
-                                    measuresof all posible combinations from
-                                    the trajectory list (list_traj)
+        df{dataframe}                                -- Dataframe with summary of similarity 
+                                                        measures of all posible combinations from
+                                                        the trajectory list (list_traj)
                                   
         """
-
+    
     n = (len(trajCollection.trajectories))
     
     if(n <= 1):
