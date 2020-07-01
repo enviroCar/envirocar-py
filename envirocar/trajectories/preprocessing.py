@@ -125,14 +125,20 @@ class Preprocessing():
             new_points -- Points with outliers removed
         """
 
-        first_quartile = points[column].quantile(0.01)
-        third_quartile = points[column].quantile(0.99)
-        iqr = third_quartile-first_quartile   # Interquartile range
-        fence_low = first_quartile - 1.5 * iqr
-        fence_high = third_quartile + 1.5 * iqr
+        if (column == "Acceleration.value"):
+            # trying to keep outliers while removing unrealistic values
+            new_points = points.loc[(points[column] > -20) & (
+                points[column] < 20)]
+        else:
+            # broader range with 0.01 and 0.99
+            first_quartile = points[column].quantile(0.01)
+            third_quartile = points[column].quantile(0.99)
+            iqr = third_quartile-first_quartile   # Interquartile range
+            fence_low = first_quartile - 1.5 * iqr
+            fence_high = third_quartile + 1.5 * iqr
 
-        new_points = points.loc[(points[column] > fence_low) & (
-            points[column] < fence_high)]
+            new_points = points.loc[(points[column] > fence_low) & (
+                points[column] < fence_high)]
 
         return new_points
 
