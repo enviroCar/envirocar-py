@@ -142,6 +142,9 @@ class Preprocessing():
 
         return new_points
 
+    def interpolate_multiple(self, points):
+        print('heheh')
+
     def interpolate(self, points):
         """ Creates a trajectory from point data
 
@@ -165,15 +168,26 @@ class Preprocessing():
         def randStr(chars=string.ascii_uppercase + string.digits, N=24):
             return ''.join(random.choice(chars) for _ in range(N))
 
-        def interpolate_spline(input_array, step):
-            tck, u = interpolate.splprep(input_array, s=0)
-            interpolated = interpolate.splev(step, tck)
-            return interpolated
+        def interpolate_spline(x, input_array, step):
+            # interpolations_methods = ['slinear', 'quadratic', 'cubic']
+            points = np.array(input_array).T
+            interpolator = interpolate.interp1d(x, points, kind='slinear',
+                                                axis=0)
+            ynew = interpolator(step)
+            transposed = ynew.T
+            return_values = [np.array(transposed[0]), np.array(transposed[1])]
 
-        def interpolate_linear(step_init, values, step_final):
-            f = interpolate.interp1d(step_init, values, axis=0,
-                                     fill_value="extrapolate")
-            values_new = f(step_final)
+            # # spline interpolation works better but takes different
+            # # steps as an input, thus shifting all the points
+            # step_norm = (step-min(step))/(max(step)-min(step))
+            # tck, u = interpolate.splprep(input_array, s=0)
+            # interpolated = interpolate.splev(step_norm, tck)
+
+            return return_values
+
+        def interpolate_linear(x, y, xnew):
+            f = interpolate.interp1d(x, y)
+            values_new = f(xnew)
             return values_new
 
         print('Amount of points before interpolation',
@@ -203,6 +217,28 @@ class Preprocessing():
         names_replicatate = [x for x in names_replicatate if x
                              not in names_extra]
 
+        time_seconds_array = points_df_cleaned[
+                 'time_seconds'].to_numpy()
+
+        passed_time = [(time_seconds_array[i+1]-time_seconds_array[i]) for i
+                       in range(len(time_seconds_array)-1)]
+        passed_time = np.insert(passed_time, 0, 0, axis=0)
+        # to interpolate for every meter
+        dist = (points_df_cleaned['Speed.value']/3.6 * passed_time)/1
+        dist_between = [sum(dist[:i+1]) for i in range(len(dist))]
+        dist_between = list(map(int, dist_between))
+        # print(dist_between)
+
+        points_df_cleaned['dist_between'] = dist_between
+
+        points_df_cleaned.drop_duplicates(
+            ['dist_between'], keep='first', inplace=True)
+
+        dist_between = np.array(
+            points_df_cleaned['dist_between'].values.tolist())
+        # print(dist_between)
+
+        del points_df_cleaned['dist_between']
         # measurements themselves
         columns_interpolate = [np.array(
             points_df_cleaned[column].values.tolist()) for column
@@ -217,23 +253,21 @@ class Preprocessing():
         # the B-spline coefficients, and the degree of the spline.
         # u: is an array of the values of the parameter.
 
-        # interpolating so many points to have a point for each second
-        step = np.linspace(0, 1, points_df_cleaned['time_seconds'].iloc[-1] -
-                           points_df_cleaned['time_seconds'].iloc[0])
+        # interpolating so many points to have a point for every 10 meters
+        # step = np.linspace(0, 1, dist_between[-1] -
+        #                    dist_between[0])
 
-        seconds = np.linspace(points_df_cleaned['time_seconds'].iloc[0],
-                              points_df_cleaned['time_seconds'].iloc[-1],
-                              points_df_cleaned['time_seconds'].iloc[-1] -
-                              points_df_cleaned['time_seconds'].iloc[0])
+        meters = np.linspace(dist_between[0],
+                             dist_between[-1],
+                             dist_between[-1] -
+                             dist_between[0],
+                             dtype='int32')
 
-        new_points = interpolate_spline(dfs[0], step)
+        new_points = interpolate_spline(dist_between, dfs[0], meters)
 
         for idx, column in enumerate(dfs[1]):
-            if (idx == 0):
-                new_points.append(seconds)
-            else:
-                new_points.append(interpolate_linear(points_df_cleaned[
-                 'time_seconds'], column, seconds))
+            new_points.append(interpolate_linear(dist_between, column,
+                                                 meters))
 
         # transposing the resulting matrix to fit it in the dataframe
         data = np.transpose(new_points)
@@ -241,13 +275,15 @@ class Preprocessing():
         # constructing the new dataframe
         interpolated_df = pd.DataFrame(data)
 
+        print(len(names_interpolate))
+
         interpolated_df.columns = names_interpolate
         interpolated_df['time'] = np.vectorize(
             seconds_to_date)(interpolated_df['time_seconds'])
 
         # these should all be the same for one ride, so just replicating
         columns_replicate = [np.repeat(points_df_cleaned[column].iloc[0],
-                             len(step)) for column in names_replicatate]
+                             len(meters)) for column in names_replicatate]
 
         replicated_transposed = np.transpose(columns_replicate)
         replicated_df = pd.DataFrame(replicated_transposed)
@@ -271,6 +307,7 @@ class Preprocessing():
 
         print('Amount of points after interpolation',
               full_gdf.shape)
+        # print(full_gdf['track.length'])
 
         return full_gdf
 

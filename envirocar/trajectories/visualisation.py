@@ -292,7 +292,7 @@ class Visualiser():
             if(len(traj_day.trajectories) > 0):
                 for traj in traj_day.trajectories:
                     point_row = 0
-                    track_id = traj.df['track.id'][0]         
+                    track_id = traj.df['track.id'][0]
                     for point in range(len(traj_day.trajectories[
                          traj_row].df)):
                         temp = []
@@ -447,7 +447,7 @@ class Visualiser():
         Keyword Arguments:
             day_length {list} -- list with total length for each day
         Returns:
-            day, height, highest, highest_index, average {strings/integers} 
+            day, height, highest, highest_index, average {strings/integers}
                 -- attributes required for plots
         """
         day = []
@@ -488,7 +488,7 @@ class Visualiser():
             (all tracks combined)
 
         Keyword Arguments:
-            weekly_trajectories {list of mpd trajectory collection} 
+            weekly_trajectories {list of mpd trajectory collection}
                 -- 7 indices respective of each day of the week
         Returns:
             No Return
