@@ -82,6 +82,36 @@ class Preprocessing():
 
         return combined_again
 
+    def split_beginning(self, points_df, seconds_end):
+
+        def seconds_since_start(x, start):
+            # print(x, start)
+            if (isinstance(x, str)):
+                x = datetime.datetime.strptime(x, '%Y-%m-%dT%H:%M:%S')
+            seconds = (x-start).total_seconds()
+            return int(seconds)
+
+        dict_of_tracks = dict(iter(points_df.groupby('track.id')))
+        beginnings = []
+
+        for track_id in dict_of_tracks:
+            start_time = datetime.datetime.strptime(
+                dict_of_tracks[track_id].time.iloc[0], '%Y-%m-%dT%H:%M:%S')
+
+            dict_of_tracks[track_id]['Seconds since start'] = \
+                np.vectorize(seconds_since_start)(
+                    np.array(dict_of_tracks[track_id]['time'].values.tolist()),
+                    start_time)
+
+            beginning = dict_of_tracks[track_id][dict_of_tracks[track_id]
+                                                 ['Seconds since start']
+                                                 < seconds_end]
+            beginnings.append(beginning)
+
+        combined_again = pd.concat(beginnings)
+
+        return combined_again
+
     def remove_outliers(self, points, column):
         """ Remove outliers by using the statistical approach
         as described in
@@ -95,8 +125,8 @@ class Preprocessing():
             new_points -- Points with outliers removed
         """
 
-        first_quartile = points[column].quantile(0.05)
-        third_quartile = points[column].quantile(0.95)
+        first_quartile = points[column].quantile(0.01)
+        third_quartile = points[column].quantile(0.99)
         iqr = third_quartile-first_quartile   # Interquartile range
         fence_low = first_quartile - 1.5 * iqr
         fence_high = third_quartile + 1.5 * iqr

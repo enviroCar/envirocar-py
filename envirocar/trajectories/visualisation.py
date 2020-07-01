@@ -5,6 +5,7 @@ import folium
 import random
 import seaborn as sns
 import pandas as pd
+import plotly.express as px
 # import movingpandas as mpd
 # from statistics import mean
 # from shapely.geometry import Point, LineString, Polygon
@@ -75,7 +76,8 @@ class Visualiser():
                     cmap=sns.diverging_palette(220, 10, as_cmap=True),
                     square=True, ax=ax)
 
-    def plot_pair_correlation(self, points_df, column_1, column_2):
+    def plot_pair_correlation(self, points_df, column_1, column_2,
+                              sort_by='id', regression=False):
         """ To plot a pairwise relationship in a dataset.
         Special case for the Acceleration values to see difference
         (if any) between accelerating and braking.
@@ -83,20 +85,82 @@ class Visualiser():
         Keyword Arguments:
             points_df {dataframe} -- A Pandas dataframe of a trajectory
             column_1, column_2 {string} -- names of 2 columns to analyse
+            sort_by {string} -- 'id' or 'temperature'
+            regression {boolean} -- defines which kind of plot to plot
         Returns:
             No Return
         """
 
-        if (column_2 == "Acceleration.value" or
-                column_1 == "Acceleration.value"):
-            df1 = points_df[points_df["Acceleration.value"] > 0]
-            df2 = points_df[points_df["Acceleration.value"] < 0]
+        if (sort_by == 'temperature'):
+            bins = [-10, 0, 5, 10, 20, 30, 40]
+            copied = points_df.copy()
+            copied['Intake Temperature.value'] = \
+                copied['Intake Temperature.value'].astype(int)
+            copied['binned_temp'] = pd.cut(copied['Intake Temperature.value'],
+                                           bins)
 
-            sns.pairplot(df1, vars=[column_1, column_2])
-            sns.pairplot(df2, vars=[column_1, column_2])
+            if (column_2 == "Acceleration.value" or
+                    column_1 == "Acceleration.value"):
+                df1 = copied[copied["Acceleration.value"] > 0]
+                df2 = copied[copied["Acceleration.value"] < 0]
+
+                if (regression):
+                    sns.lmplot(x=column_1, y=column_2, hue='binned_temp',
+                               data=df1, palette="viridis")
+                    sns.lmplot(x=column_1, y=column_2, hue='binned_temp',
+                               data=df2, palette="viridis")
+                else:
+                    sns.pairplot(df1, vars=[column_1, column_2],
+                                 hue="binned_temp")
+                    sns.pairplot(df2, vars=[column_1, column_2],
+                                 hue="binned_temp")
+
+            else:
+                if (regression):
+                    sns.lmplot(x=column_1, y=column_2, hue='binned_temp',
+                               data=copied)
+                else:
+                    sns.pairplot(copied, vars=[column_1, column_2],
+                                 hue="binned_temp")
 
         else:
-            sns.pairplot(points_df, vars=[column_1, column_2])
+            if (column_2 == "Acceleration.value" or
+                    column_1 == "Acceleration.value"):
+                df1 = points_df[points_df["Acceleration.value"] > 0]
+                df2 = points_df[points_df["Acceleration.value"] < 0]
+
+                if (regression):
+                    sns.lmplot(x=column_1, y=column_2, hue='track.id',
+                               data=df1, palette="viridis")
+                    sns.lmplot(x=column_1, y=column_2, hue='track.id',
+                               data=df2, palette="viridis")
+                else:
+                    sns.pairplot(df1, vars=[column_1, column_2],
+                                 hue="track.id")
+                    sns.pairplot(df2, vars=[column_1, column_2],
+                                 hue="track.id")
+
+            else:
+                if (regression):
+                    sns.lmplot(x=column_1, y=column_2, hue='track.id',
+                               data=points_df, palette="viridis")
+                else:
+                    sns.pairplot(points_df, vars=[column_1, column_2],
+                                 hue="track.id")
+
+    def plot_distribution(self, points, column):
+        fig, (ax1, ax2, ax3) = plt.subplots(
+            1, 3, figsize=(15, 5), gridspec_kw={'width_ratios': [5, 5, 5]})
+
+        sns.boxplot(x=points[column], ax=ax1)
+        ax1.set_title('Boxplot')
+        sns.kdeplot(points[column], shade=True, color="r", ax=ax2)
+        ax2.set_title('Gaussian kernel density estimate')
+        sns.distplot(points[column], kde=False, ax=ax3)
+        ax3.set_title('Histogram')
+
+        fig.tight_layout()
+        plt.show()
 
     def create_map(self, trajectories):
         """ To create a Folium Map object (in case its not already available)
@@ -148,8 +212,29 @@ class Visualiser():
 
             index += 1
 
+    def plot_point_values(self, points, value):
+        """ To show points on a map
+
+        Keyword Arguments:
+            points {GeoDataFrame} -- points input
+            value {string} -- column value to use for colouriing
+
+        Returns:
+            No Return
+        """
+
+        points['lat'] = points['geometry'].apply(lambda coord: coord.y)
+        points['lng'] = points['geometry'].apply(lambda coord: coord.x)
+
+        # Visualizing points by the desired value
+        fig = px.scatter_mapbox(points, lat="lat", lon="lng", color=value,
+                                title=value + " visualisation", zoom=8)
+        fig.update_layout(mapbox_style="open-street-map",
+                          margin={"r": 5, "t": 50, "l": 10, "b": 5})
+        fig.show()
+
     def plot_region(self, region, region_map, region_color, label):
-        """ To plot provided regionss over the provided map
+        """ To plot provided regions over the provided map
 
         Keyword Arguments:
             region {shapely Polygon} -- A shapely based Polygon
