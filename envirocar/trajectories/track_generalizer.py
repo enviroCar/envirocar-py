@@ -76,12 +76,12 @@ class MinDistanceGeneralizer(TrackGeneralizer):
     def _generalize_traj(self, traj, tolerance,
                          columnNamesToDistributeValues=None):
         temp_df = traj.df.copy()
-        prev_pt = temp_df.iloc[0][traj.get_geom_column_name()]
+        prev_pt = temp_df.iloc[0]['geometry']
         keep_rows = [0]
         i = 0
         trajCopy = deepcopy(traj)
-        for index, row in trajCopy.df.iterrows():
-            pt = row[traj.get_geom_column_name()]
+        for index, row in temp_df.iterrows():
+            pt = row['geometry']
             if traj.is_latlon:
                 dist = measure_distance_spherical(pt, prev_pt)
             else:
