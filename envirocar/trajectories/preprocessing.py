@@ -440,6 +440,173 @@ class Preprocessing():
         # add a layer control
         folium.LayerControl().add_to(m)
         return m
+    #Aggregate data by weekday and hour
+    def aggregateHourly(self,df,field,summary):
+        """
+        Aggregates the whole data by weekday and hour as preparation step for mosaic plot
+
+        Parameters
+        ----------
+        df : GeoDataFrame
+            The dataset of points to be summarized
+        field : STRING
+            The field in input dataframe to be summarized
+        summary : String
+            The type of aggregation to be used.eg. mean, median,
+
+        Returns
+        -------
+        dayhourAggregate : dataframe
+            Aggregated Data by weekday and time
+
+        """
+        #extract date and time from timestamp
+        df['hour']=df['time'].apply(lambda x:datetime.datetime.strptime(x,'%Y-%m-%dT%H:%M:%S')).dt.hour
+        df['weekday']=df['time'].apply(lambda x:datetime.datetime.strptime(x,'%Y-%m-%dT%H:%M:%S')).dt.dayofweek
+        #Aggregate by weekday and hour
+        dayhourAggregate=df.groupby(['weekday','hour']).agg({field:[summary]})
+        dayhourAggregate=dayhourAggregate.reset_index()
+        dayhourAggregate.columns=dayhourAggregate.columns.map("_".join)
+        return dayhourAggregate
+    
+    def OriginAndDestination(self,df):
+        """
+        Returnd dataframe for origin and destinations for tracks by their trackid
+
+        Parameters
+        ----------
+        df : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        origin : TYPE
+            DESCRIPTION.
+        destination : TYPE
+            DESCRIPTION.
+
+        """
+        track_list=list(df['track.id'].unique())
+        origin,destination=gpd.GeoDataFrame(),gpd.GeoDataFrame()
+        for track in track_list:
+            selected_tracks=df[df['track.id']==track]
+            current_origin=selected_tracks[selected_tracks['time']==selected_tracks['time'].min()]
+            current_destination=selected_tracks[selected_tracks['time']==selected_tracks['time'].max()]
+            origin=origin.append(current_origin)
+            destination=destination.append(current_destination)
+        return origin,destination
+    
+    
+    def getClusters(self,positions,distanceKM,min_samples=5):
+        """
+        Returns the clusters from the points based on provided data to no. of clusters based on DBScan Algorithm
+
+        Parameters
+        ----------
+        positions : Geodataframe object
+           Geodataframe with positions to be clustered
+        distanceKM : Float
+            Epsilon parameters fo dbscan algorithm in km. or, distance for clustering of points
+        min_samples : Integer, optional
+            DESCRIPTION. Minimum no. of points required to form cluster.If 1 is set,each individual will form their own cluster The default is 5.
+
+        Returns
+        -------
+        Dataframe
+            The dataframe with cluster centres co-ordinates and no. of points on the cluster.
+
+        """
+        def get_centermost_point(cluster):
+            centroid = (MultiPoint(cluster).centroid.x, MultiPoint(cluster).centroid.y)
+            centermost_point = min(cluster, key=lambda point: great_circle(point, centroid).m)
+            return tuple(centermost_point)
+        df=positions.to_crs({'init':'epsg:4326'})
+        lon=df.geometry.x
+        lat=df.geometry.y
+        origin_pt=pd.DataFrame()
+        #Populate lat lon to dataframe
+        origin_pt['lat']=lat
+        origin_pt['lon']=lon
+        #add index to data
+        coords = origin_pt.to_numpy()
+        origin_pt.index=[i for i in range(len(lat))]
+        #
+        #Convert Data to projected and perform clustering
+        kms_per_radian = 6371.0088
+        epsilon = distanceKM/ kms_per_radian
+        db = DBSCAN(eps=epsilon, min_samples=min_samples, algorithm='ball_tree', metric='haversine').fit(np.radians(coords))
+        cluster_labels = db.labels_
+        validClusters=[]
+        for cluster in cluster_labels:
+            if cluster!=-1:
+                validClusters.append(cluster)
+        num_clusters = len(set(validClusters))
+        clusters = pd.Series([coords[cluster_labels == n] for n in range(num_clusters)])
+        #Assigining clusterId to each point
+        origin_pt['clusterId']=cluster_labels
+        ##Identify cluster Centres
+        centermost_points = clusters.map(get_centermost_point)  
+    
+        #Create Geodataframe with attributes for cluster centroids
+        clusterId=[i for i in range(len(centermost_points))]
+        centroidLat=[centermost_points[i][0] for i in range(len(centermost_points))]
+        centroidLon=[centermost_points[i][1] for i in range(len(centermost_points))]
+        clusterSize=[len(origin_pt[origin_pt['clusterId']==i])for i in range(len(centermost_points))]
+        #Create dataframe for cluster centers
+        clusterCentres_df=pd.DataFrame({'clusterId':clusterId,'clusterLat':centroidLat,'clusterLon':centroidLon,'clusterSize':clusterSize})
+        clusterCentres=gpd.GeoDataFrame(clusterCentres_df,geometry=gpd.points_from_xy(clusterCentres_df.clusterLon,clusterCentres_df.clusterLat))
+        return clusterCentres
+
+    def showClusters(self,clusterCentres,track):
+        """
+        Shows the cluster of the datasets along with original tracks
+
+        Parameters
+        ----------
+        clusterCentres : Geodataframe
+            The geodataframe object with details of clusterCenters.Obtained as processing by getClusters fucntion
+        track : Geodataframe
+            The points geodataframe to be shown on map alongwith clusters. For visualization only
+
+        Returns
+        -------
+        m : folium map-type object
+            The map with source data and clusters overlaid
+
+        """
+        # Make an empty map
+        lat=clusterCentres.geometry.y.mean()
+        lon=clusterCentres.geometry.x.mean()
+        clusterList=list(clusterCentres['clusterSize'])
+        m = folium.Map(location=[lat,lon], tiles="openstreetmap", zoom_start=12)
+    
+        
+        #add points from track
+        for i in range(0,len(track)):
+            lat=track.iloc[i].geometry.y
+            lon=track.iloc[i].geometry.x
+            folium.Circle(
+              location=[lat,lon],
+              radius=0.05,
+              color='black',
+               weight=2,
+              fill=True,opacity=0.5,
+              fill_color='black',
+           ).add_to(m)
+            
+             #add marker one by one on the map
+        for i in range(0,len(clusterCentres)):
+           folium.Circle(
+              location=[clusterCentres.iloc[i]['clusterLat'], clusterCentres.iloc[i]['clusterLon']],
+              popup=clusterList[i],
+              radius=clusterList[i]*10,
+              color='red',
+               weight=2,
+              fill=True,
+              fill_color='red'
+           ).add_to(m)
+        return m
+
 
     def flow_between_regions(self, data_mpd_df, from_region, to_region,
                              twoway):
