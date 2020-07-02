@@ -7,3 +7,14 @@ pydeck
 ipython
 folium
 scipy
+seaborn
+shapely
+branca
+sklearn
+geopy
+itertools
+timeit
+movingpandas
+statistics
+random
+plotly
