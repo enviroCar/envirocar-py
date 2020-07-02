@@ -148,7 +148,7 @@ class MinTimeDeltaGeneralizer(TrackGeneralizer):
         keep_rows = [0]
         i = 0
         trajCopy = deepcopy(traj)
-        for index, row in trajCopy.df.iterrows():
+        for index, row in temp_df.iterrows():
             t = row['t']
             tdiff = t - prev_t
             if tdiff >= tolerance:
@@ -184,77 +184,6 @@ class MinTimeDeltaGeneralizer(TrackGeneralizer):
         new_df = trajCopy.df.iloc[keep_rows]
         removedRowsCount = len(traj.df.index) - len(keep_rows)
         new_columns = {'Generalized': True, 'Generalization.Method': 'Min-Time-Delta',
-                       'Generalization.RemovedRowsCount': removedRowsCount}
-        new_df = new_df.assign(**new_columns)
-        new_traj = Trajectory(new_df, trajCopy.id)
-        return new_traj
-
-
-class MaxDistanceGeneralizer(TrackGeneralizer):
-    """
-    Generalizes based on distance.
-    Similar to Douglas-Peuker. Single-pass implementation that checks whether
-        the provided distance threshold
-    is exceed.
-    tolerance : float
-        Distance tolerance
-    columnNamesToDistributeValues : list of column names to distribute values
-        to neighboring kept rows
-    Examples
-    --------
-    >>> mpd.MaxDistanceGeneralizer(traj).generalize(tolerance=1.0)
-    """
-
-    def _generalize_traj(self, traj, tolerance,
-                         columnNamesToDistributeValues=None):
-        prev_pt = None
-        pts = []
-        keep_rows = []
-        i = 0
-        trajCopy = deepcopy(traj)
-        for index, row in trajCopy.df.iterrows():
-            current_pt = row[trajCopy.get_geom_column_name()]
-            if prev_pt is None:
-                prev_pt = current_pt
-                keep_rows.append(i)
-                continue
-            line = LineString([prev_pt, current_pt])
-            for pt in pts:
-                if line.distance(pt) > tolerance:
-                    prev_pt = current_pt
-                    pts = []
-                    keep_rows.append(i)
-                    continue
-            pts.append(current_pt)
-            i += 1
-
-        keep_rows.append(i)
-        if (columnNamesToDistributeValues):
-            # Distribute the selected values of dropped rows to the
-            # neighboring rows
-            for i, rowIndex in enumerate(keep_rows):
-                if (i < len(keep_rows) - 1 and keep_rows[i+1] - rowIndex > 1):
-                    nextRowIndex = keep_rows[i + 1]
-                    discardedRows = trajCopy.df.iloc[rowIndex +
-                                                     1: nextRowIndex]
-                    discardedRowsSelectedColumns = \
-                        discardedRows[columnNamesToDistributeValues]
-                    discardedRowsSelectedColumnsSum = \
-                        discardedRowsSelectedColumns.sum()
-                    aboveRow = trajCopy.df.iloc[rowIndex]
-                    belowRow = trajCopy.df.iloc[nextRowIndex]
-                    aboveRow[columnNamesToDistributeValues] = \
-                        aboveRow[columnNamesToDistributeValues] + (
-                        discardedRowsSelectedColumnsSum/2)
-                    belowRow[columnNamesToDistributeValues] = \
-                        belowRow[columnNamesToDistributeValues] + (
-                        discardedRowsSelectedColumnsSum/2)
-                    trajCopy.df.iloc[rowIndex] = aboveRow
-                    trajCopy.df.iloc[nextRowIndex] = belowRow
-
-        new_df = trajCopy.df.iloc[keep_rows]
-        removedRowsCount = len(traj.df.index) - len(keep_rows)
-        new_columns = {'Generalized': True, 'Generalization.Method': 'Max-Distance',
                        'Generalization.RemovedRowsCount': removedRowsCount}
         new_df = new_df.assign(**new_columns)
         new_traj = Trajectory(new_df, trajCopy.id)
