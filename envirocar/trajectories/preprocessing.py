@@ -52,6 +52,17 @@ class Preprocessing():
         return trips
 
     def calculateAcceleration(self, points_df):
+        """ Calculates acceleration for each point in the dataframe
+            based on the speed and time of itself and the previous point
+
+        Keyword Arguments:
+            points_df {GeoDataFrame} -- A GeoDataFrame containing the track
+                points
+
+        Returns:
+            combined_again -- new GeoDataFrame with "Acceleration.value" column
+        """
+
         points_df['t'] = pd.to_datetime(
              points_df['time'], format='%Y-%m-%dT%H:%M:%S')
 
@@ -82,7 +93,16 @@ class Preprocessing():
 
         return combined_again
 
-    def split_beginning(self, points_df, seconds_end):
+    def split_by_time(self, points_df, seconds_start, seconds_end):
+        """ Takes some part of the track
+
+        Keyword Arguments:
+            points {GeoDataFrame} -- A GeoDataFrame containing the track points
+            seconds_start, seconds_end {int} -- desired start end end seconds
+
+        Returns:
+            combined_again -- Some part of the tracks
+        """
 
         def seconds_since_start(x, start):
             # print(x, start)
@@ -103,9 +123,12 @@ class Preprocessing():
                     np.array(dict_of_tracks[track_id]['time'].values.tolist()),
                     start_time)
 
-            beginning = dict_of_tracks[track_id][dict_of_tracks[track_id]
+            beginning = dict_of_tracks[track_id][(dict_of_tracks[track_id]
                                                  ['Seconds since start']
-                                                 < seconds_end]
+                                                 < seconds_end) &
+                                                 (dict_of_tracks[track_id]
+                                                 ['Seconds since start']
+                                                 > seconds_start)]
             beginnings.append(beginning)
 
         combined_again = pd.concat(beginnings)
@@ -142,14 +165,13 @@ class Preprocessing():
 
         return new_points
 
-    def interpolate_multiple(self, points):
-        print('heheh')
-
-    def interpolate(self, points):
-        """ Creates a trajectory from point data
+    def interpolate(self, points, step_type="meters", step_pr=10):
+        """ Interpolates points
 
         Keyword Arguments:
             points {GeoDataFrame} -- A GeoDataFrame containing the track points
+            step_type {string} -- either "meters" or "seconds"
+            step_pr {int} -- step precision. In case of "meters" can be 1 or 10
 
         Returns:
             new_points -- An interpolated trajectory
@@ -168,7 +190,7 @@ class Preprocessing():
         def randStr(chars=string.ascii_uppercase + string.digits, N=24):
             return ''.join(random.choice(chars) for _ in range(N))
 
-        def interpolate_spline(x, input_array, step):
+        def interpolate_coords(x, input_array, step):
             # interpolations_methods = ['slinear', 'quadratic', 'cubic']
             points = np.array(input_array).T
             interpolator = interpolate.interp1d(x, points, kind='slinear',
@@ -228,8 +250,10 @@ class Preprocessing():
             passed_time = [(time_seconds_array[i+1]-time_seconds_array[i])
                            for i in range(len(time_seconds_array)-1)]
             passed_time = np.insert(passed_time, 0, 0, axis=0)
-            # to interpolate for every meter
-            dist = (points_df_cleaned['Speed.value']/3.6 * passed_time)/10
+            # to interpolate for every meter or every 10 meters
+            if (step_pr != 1):
+                step_pr = 10
+            dist = (points_df_cleaned['Speed.value']/3.6 * passed_time)/step_pr
             dist_between = [sum(dist[:i+1]) for i in range(len(dist))]
             dist_between = list(map(int, dist_between))
             # print(dist_between)
@@ -258,21 +282,27 @@ class Preprocessing():
             # the B-spline coefficients, and the degree of the spline.
             # u: is an array of the values of the parameter.
 
-            # interpolating so many points to have a point for every 10 meters
-            # step = np.linspace(0, 1, dist_between[-1] -
-            #                    dist_between[0])
+            if (step_type == 'seconds'):
+                step_interp = np.linspace(
+                    points_df_cleaned['time_seconds'].iloc[0],
+                    points_df_cleaned['time_seconds'].iloc[-1],
+                    points_df_cleaned['time_seconds'].iloc[-1]
+                    - points_df_cleaned['time_seconds'].iloc[0])
+                step_original = np.array(
+                    points_df_cleaned['time_seconds'].values.tolist())
+            else:
+                step_interp = np.linspace(dist_between[0],
+                                          dist_between[-1],
+                                          dist_between[-1] -
+                                          dist_between[0],
+                                          dtype='int32')
+                step_original = dist_between
 
-            meters = np.linspace(dist_between[0],
-                                 dist_between[-1],
-                                 dist_between[-1] -
-                                 dist_between[0],
-                                 dtype='int32')
-
-            new_points = interpolate_spline(dist_between, dfs[0], meters)
+            new_points = interpolate_coords(step_original, dfs[0], step_interp)
 
             for idx, column in enumerate(dfs[1]):
-                new_points.append(interpolate_linear(dist_between, column,
-                                                     meters))
+                new_points.append(interpolate_linear(step_original, column,
+                                                     step_interp))
 
             # transposing the resulting matrix to fit it in the dataframe
             data = np.transpose(new_points)
@@ -286,7 +316,8 @@ class Preprocessing():
 
             # these should all be the same for one ride, so just replicating
             columns_replicate = [np.repeat(points_df_cleaned[column].iloc[0],
-                                 len(meters)) for column in names_replicatate]
+                                 len(step_interp)) for column
+                                 in names_replicatate]
 
             replicated_transposed = np.transpose(columns_replicate)
             replicated_df = pd.DataFrame(replicated_transposed)
@@ -308,13 +339,12 @@ class Preprocessing():
             # remove full_gdf['lng'], full_gdf['lat'] ?
             del full_gdf['time_seconds']
 
-            print('Amount of points after interpolation',
-                  full_gdf.shape)
             # print(full_gdf['track.length'])
             interpolated.append(full_gdf)
 
             combined_again = pd.concat(interpolated)
-
+        print('Amount of points after interpolation',
+              combined_again.shape)
         return combined_again
 
     def aggregate(self, track_df, MIN_LENGTH, MIN_GAP, MAX_DISTANCE,
