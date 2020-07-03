@@ -3,6 +3,10 @@ pandas
 requests
 geopandas
 matplotlib
-pydeck
 ipython
-folium
+requests
+json
+scipy
+math
+time
+osmnx
