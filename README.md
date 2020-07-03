@@ -18,16 +18,15 @@ To install envirocar-py in develop mode, use the following:
 python setup.py develop
 ```
 
-If the extension has't included in the envirocar-py, you can install it manully by the steps:
-Download the folder by the [link]( 
-https://github.com/masawdah/enrgydemand/tree/master/envirocar/client/fuel)
-and the files required_functions.py , request_param.py 
-from the ([folder](https://github.com/masawdah/enrgydemand/tree/master/envirocar/client))
+If the extension hasn't included in the envirocar-py, you can install it manully by the steps:
+Download the <b> folder</b> by the [link](https://github.com/masawdah/enrgydemand/tree/master/envirocar/client/fuel)
+and the files <b> required_functions.py , request_param.py </b>
+from the [folder](https://github.com/masawdah/enrgydemand/tree/master/envirocar/client)
 Finally, put the files under your local envirocar/client folder
 
 
 ## Examples
-The example of the extension can be found [here] (https://github.com/masawdah/enrgydemand/blob/master/examples/python_tool_example.ipynb)
+The example of the extension can be found [here](https://github.com/masawdah/enrgydemand/blob/master/examples/python_tool_example.ipynb)
 
 The step by step calculation can be found in the example [folder](https://github.com/masawdah/enrgydemand/blob/master/examples/Energy_demand.ipynb)
 
