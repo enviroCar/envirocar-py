@@ -1,8 +1,8 @@
 # EnergyDemand
 
-The tool is an extension of enviroCar Python package allows users to download the trajectory data and estimate the energy demand and co2 emission along tracks. The tool provides users to set their cars, and also elaborate on the accuracy of elevation, driving efficiency, and the pavement of the track. 
+The tool is an extension of enviroCar Python package and allows users to download the trajectory data and estimate the energy demand and co2 emission along tracks. The tool provides users to set their cars parameters, and also elaborate on the accuracy of elevation, driving efficiency, and the pavement of the track. 
 
-The extension currently supports users to estimate the energy demand and co2 emission value of downlod track data. It is intended to further expand these functionalities with additional analytics in the future.
+The extension currently only supports users to estimate the energy demand and co2 emission value of downlod track data. It is intended to further expand these functionalities with additional analytics in the future.
 
 ## Installation
 
