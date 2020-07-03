@@ -1,8 +1,8 @@
-# envirocar-py
+# EnergyDemand
 
-The enviroCar Python package allows users to query and download trajectory data from the enviroCar API. The data will be stored in a flat GeoDataFrame from GeoPandas. The resulting dataframe consists of all measurements from the requested tracks including measured sensor values from the cars and further metadata about the track. 
+The tool is an extension of enviroCar Python package and allows users to download the trajectory data and estimate the energy demand and co2 emission along tracks. The tool provides users to set their cars parameters, and also elaborate on the accuracy of elevation, driving efficiency, and the pavement of the track. 
 
-The package currently only supports querying track data. It is intended to further expand these functionalities with additional analytics in the future.
+The extension currently only supports users to estimate the energy demand and co2 emission value of downlod track data. It is intended to further expand these functionalities with additional analytics in the future.
 
 ## Installation
 
@@ -18,9 +18,18 @@ To install envirocar-py in develop mode, use the following:
 python setup.py develop
 ```
 
+If the extension hasn't included in the envirocar-py, you can install it manully by the steps:
+Download the <b> folder</b> by the [link](https://github.com/masawdah/enrgydemand/tree/master/envirocar/client/fuel)
+and the files <b> required_functions.py , request_param.py </b>
+from the [folder](https://github.com/masawdah/enrgydemand/tree/master/envirocar/client)
+Finally, put the files under your local envirocar/client folder
+
+
 ## Examples
-Jupyter notebooks on how to use this package to request data from enviroCar API can be found in the examples folder:
- * Download data and visualize with pydeck ([here](https://github.com/enviroCar/envirocar-py/blob/master/examples/api_request_deckgl.ipynb))
+The example of the extension can be found [here](https://github.com/masawdah/enrgydemand/blob/master/examples/python_tool_example.ipynb)
+
+The step by step calculation can be found in the example [folder](https://github.com/masawdah/enrgydemand/blob/master/examples/Energy_demand.ipynb)
+
 
 ## License ##
     MIT License
