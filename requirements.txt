@@ -18,3 +18,7 @@ movingpandas
 statistics
 random
 plotly
+similaritymeasures
+datetime
+copy
+json
