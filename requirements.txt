@@ -10,7 +10,7 @@ scipy
 seaborn
 shapely
 branca
-sklearn
+scikit-learn
 geopy
 itertools
 timeit
