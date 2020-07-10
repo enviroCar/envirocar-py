@@ -43,6 +43,8 @@ class consumption():
                     --e
                 else:
                     e= e+batch[1]
+                if s >= len(one_track):
+                    break
                 parms= generate_parms(one_track,s,e)
                 access= url+parms
                 part = request(access)
@@ -57,6 +59,7 @@ class consumption():
                 for i in temp.index:
                     one_track.loc[i,'elevation']=one_track.loc[i,'GPS Altitude.value']
             # Match the graph with osm and get maxspeed & surface attriubutes
+            ox.settings.useful_tags_way = ["maxspeed","surface"]
             for i in one_track.index:
                 lat= one_track.loc[i,'geometry'].y
                 lng= one_track.loc[i,'geometry'].x
