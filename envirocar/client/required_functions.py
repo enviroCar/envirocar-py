@@ -15,9 +15,9 @@ def generate_parms(one_track,s,e):
 
 def request(link):
     elevation = req.request('GET',link)
-    results = elevation.json()['results']
     status =elevation.json()['status']
     if status=='OK':
+		results = elevation.json()['results']
         h = list(map(lambda x : x['elevation'], results))
     else:
         h= None
