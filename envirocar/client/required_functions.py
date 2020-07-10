@@ -32,7 +32,7 @@ def distance(lon1,lon2,lat1,lat2):
 
 ## Calculate the gradeint on the segment    
 def gradient(height,distance):
-    return height/distance
+    return np.arctan(height/distance)
 
 ## Calculate the efficiency value
 def interpolation(x):
