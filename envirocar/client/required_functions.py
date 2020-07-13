@@ -15,12 +15,8 @@ def generate_parms(one_track,s,e):
 
 def request(link):
     elevation = req.request('GET',link)
-    status =elevation.json()['status']
-    if status=='OK':
-		results = elevation.json()['results']
-        h = list(map(lambda x : x['elevation'], results))
-    else:
-        h= None
+    results = elevation.json()['results']
+    h = list(map(lambda x : x['elevation'], results))
     return h
 
 ## Calculate he ditance between the two gps record/
@@ -32,7 +28,7 @@ def distance(lon1,lon2,lat1,lat2):
 
 ## Calculate the gradeint on the segment    
 def gradient(height,distance):
-    return np.arctan(height/distance)
+    return height/distance
 
 ## Calculate the efficiency value
 def interpolation(x):
@@ -44,8 +40,8 @@ def interpolation(x):
 
 ## Define engine power (KW)
 def engine_power(car,Cr,gradient,speed,acceleration):
-    g = 9.81
-    P_air = 1.2
+    g = 9.81 #Gravitational acceleration "m/s²"
+    P_air = 1.2 # Air mass density "kg per m³"
     if speed > 0:
         power =speed*(0.5*car.Cw*car.A*P_air*pow(speed,2) #driving resistance
                       +car.m*g*Cr*np.cos(gradient) #rolling resistence

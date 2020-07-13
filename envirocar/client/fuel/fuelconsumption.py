@@ -14,6 +14,7 @@ from ..required_functions import generate_parms, request, distance, gradient, in
 class consumption():
 
     def fuel_consumption(car:car, osmbox:BboxSelector, track_df = gpd.GeoDataFrame()):
+        # Request elevation values from an open source (opentopodata.org)
         url = 'https://api.opentopodata.org/v1/eudem25m?locations='
         tracks = pd.DataFrame(columns=track_df.columns)
 
@@ -27,7 +28,7 @@ class consumption():
         a = track_df['track.id'].value_counts()
         for i in a:
             n+=1
-        # loop through the dataframe and get the elevation from open source    
+        # loop through the dataframe and get the elevation from open source for each record in each routes   
         for i in range (0,n):
             one_track_id = track_df['track.id'].unique()[i]
             one_track = track_df[track_df['track.id'] == one_track_id]
@@ -43,17 +44,21 @@ class consumption():
                     --e
                 else:
                     e= e+batch[1]
+                #check the parameters (s) not excced the lenght of the track
                 if s >= len(one_track):
                     break
+                #creat the request
                 parms= generate_parms(one_track,s,e)
+                #send the request and get the results
                 access= url+parms
                 part = request(access)
                 if part==None:
-                    part=[np.nan]*(e+1-s)    
+                    part=[np.nan]*(e+1-s)
+                #put the results in a list
                 elevation.extend(part)
                 time.sleep(1)
             one_track['elevation']=elevation
-            # Filterout the null value
+            # Filterout the null value and use GPS altitude to fill them
             temp=one_track[one_track['elevation'].isnull()==True]
             if len(temp)> 0:
                 for i in temp.index:
@@ -67,14 +72,22 @@ class consumption():
                 p = [x[0],x[1]]
                 a = ox.utils_graph.get_route_edge_attributes(G, p)
                 dic = a[0]
+                # check if the edge has maximum speed value if not then use the value of previous point
                 if "maxspeed" in dic:
                     one_track.loc[i,"maxspeed"] = dic["maxspeed"]
-                    
+                else:
+                    if i > 0:
+                        m = one_track.loc[i-1,"maxspeed"]
+                        one_track.loc[i,"maxspeed"] = m
+                        
+                # check if the edge has a surface value, if not then use the value of previous point    
                 if "surface" in dic:
                     one_track.loc[i,"surface"] = dic["surface"]
                 else:
-                    s = one_track.loc[i-1,"surface"] if i>0 else one_track.loc[i+1,"surface"]
-                    one_track.loc[i,"surface"] =  s
+                    if i > 0:
+                        s = one_track.loc[i-1,"surface"]
+                        one_track.loc[i,"surface"] =  s
+                    
 
                 # get the rolling resistance cofficient
                 if one_track.loc[i, 'surface'] == "asphalt":
@@ -89,20 +102,47 @@ class consumption():
             for i in one_track.index:
                 if (i == len(one_track)-1):
                     break
+                # Get the coordinates of each point
                 lat1= one_track.loc[i,'geometry'].y
                 lat2= one_track.loc[i+1,'geometry'].y
                 lon1= one_track.loc[i,'geometry'].x
                 lon2= one_track.loc[i+1,'geometry'].x
+
+                #calculate the elevation difference between the two points
                 heightdiff = one_track.loc[i+1,'elevation'] - one_track.loc[i,'elevation']
+
+                #calculate the distance between the two points/ and the accumulated distance
                 one_track.loc[i+1,'seg_distance']= distance(lon1,lon2,lat1,lat2)
+                if i == 0:
+                    one_track.loc[i,'total_distance'] = 0
+                    one_track.loc[i+1,'total_distance'] = one_track.loc[i+1,'seg_distance']
+                else:
+                    one_track.loc[i+1,'total_distance']= one_track.loc[i+1,'seg_distance'] + one_track.loc[i,'total_distance']
                 grade = gradient(heightdiff,one_track.loc[i+1,'seg_distance'])
                 one_track.loc[i,'gradient']= grade
 
             ## Add interval time
-            j = 5
-            for i in one_track.index:
-                one_track.loc[i, 'time_interval'] = j
-                j = j+5
+            #get the timestamp column from the track
+            track_time = one_track[['time']]
+            #convert the timestamp column to sereis
+            time_track = track_time.iloc[:,0]
+            #convert the timestamp to data time
+            x = pd.to_datetime(time_track)
+            x_list = x.tolist()
+            #calculate the time difference in second, and put it in a list
+            time_interval = []
+            for i in range(len(x_list)):
+                if i == 0 :
+                    time_in_second = 0
+                    one_track.loc[i,'accumulate_time_interval'] = time_in_second
+                else:
+                    time_in_second = ((x_list[i] - x_list[i-1]).total_seconds())
+                    one_track.loc[i,'accumulate_time_interval'] = time_in_second + one_track.loc[i-1,'accumulate_time_interval']
+                    
+                time_interval.append(time_in_second)
+            # add the time interval list to the track
+            one_track['time_interval']=time_interval
+        
             # Convert the speed unit to m/s
             for i in one_track.index:
                 one_track.loc[i, 'speed'] = one_track.loc[i, 'GPS Speed.value'] / 3.6
@@ -113,7 +153,7 @@ class consumption():
                 if (i == len(one_track)-1):
                     break
                 else:
-                    one_track.loc[i, 'Acceleration'] = (one_track.loc[i+1, 'speed'] - one_track.loc[i, 'speed'])/5
+                    one_track.loc[i, 'Acceleration'] = (one_track.loc[i+1, 'speed'] - one_track.loc[i, 'speed'])/one_track.loc[i,'time_interval']
 
             ## Calculates Engine Power for general car
             for i in one_track.index:
