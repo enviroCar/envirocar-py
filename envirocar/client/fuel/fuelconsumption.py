@@ -6,7 +6,7 @@ import osmnx as ox
 
 
 
-from ..request_param import RequestParam, BboxSelector, TimeSelector, car, road
+from ..request_param import RequestParam, BboxSelector, TimeSelector, car
 from ..download_client import DownloadClient
 from ..required_functions import generate_parms, request, distance, gradient, interpolation, fuel_consumptions, engine_power
 
@@ -179,7 +179,7 @@ class consumption():
                 one_track.loc[i, 'CO2_Gasoline'] = car_cons * car.H_g      ## kg Co2 / hour
             
             tracks = pd.concat([tracks, one_track])
-            tracks = tracks[['elevation','maxspeed','Acceleration','surface','rolling_resistance','gradient','efficiency','Consumption_Gasoline','CO2_Gasoline']]
+            tracks = tracks[['elevation','accumulate_time_interval','maxspeed','Acceleration','surface','rolling_resistance','gradient','efficiency','Consumption_Gasoline','CO2_Gasoline']]
 
             
         return tracks
