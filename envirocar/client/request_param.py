@@ -42,7 +42,5 @@ class car():
         self.Cw = Air_drag_cofficient
         self.H_g = Calorific_value
         self.P_idle = Idle_power
-class road():
-    def __init__(self, rolling_resistance_cofficient = 0.02):
-        self.Cr = rolling_resistance_cofficient
+
     
