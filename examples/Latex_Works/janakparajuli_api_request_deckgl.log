@@ -1,0 +1,1167 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7300 64-bit) (preloaded format=pdflatex 2020.2.9)  14 APR 2020 22:05
+entering extended mode
+**./janakparajuli_api_request_deckgl.tex
+(janakparajuli_api_request_deckgl.tex
+LaTeX2e <2020-02-02>
+L3 programming layer <2020-02-03>
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/base\article.c
+ls"
+Document Class: article 2019/12/20 v1.4l Standard LaTeX document class
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/base\size11.cl
+o"
+File: size11.clo 2019/12/20 v1.4l Standard LaTeX file (size option)
+)
+\c@part=\count167
+\c@section=\count168
+\c@subsection=\count169
+\c@subsubsection=\count170
+\c@paragraph=\count171
+\c@subparagraph=\count172
+\c@figure=\count173
+\c@table=\count174
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen134
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/tcolorbox\tcol
+orbox.sty"
+Package: tcolorbox 2019/11/15 version 4.22 text color boxes
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/pgf/basiclayer
+\pgf.sty"
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/pgf/utilities\
+pgfrcs.sty"
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/utilitie
+s\pgfutil-common.tex"
+\pgfutil@everybye=\toks14
+\pgfutil@tempdima=\dimen135
+\pgfutil@tempdimb=\dimen136
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/utilitie
+s\pgfutil-common-lists.tex"))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/utilitie
+s\pgfutil-latex.def"
+\pgfutil@abb=\box45
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/ms\everyshi.st
+y"
+Package: everyshi 2001/05/15 v3.00 EveryShipout Package (MS)
+))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/utilitie
+s\pgfrcs.code.tex"
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf\pgf.revi
+sion.tex")
+Package: pgfrcs 2020/01/08 v3.1.5b (3.1.5b)
+))
+Package: pgf 2020/01/08 v3.1.5b (3.1.5b)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/pgf/basiclayer
+\pgfcore.sty"
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/graphics\graph
+icx.sty"
+Package: graphicx 2019/11/30 v1.2a Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/graphics\keyva
+l.sty"
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks15
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/graphics\graph
+ics.sty"
+Package: graphics 2019/11/30 v1.4a Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/graphics\trig.
+sty"
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/graphics-cfg\g
+raphics.cfg"
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/graphics-def\p
+dftex.def"
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen137
+\Gin@req@width=\dimen138
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/pgf/systemlaye
+r\pgfsys.sty"
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/systemla
+yer\pgfsys.code.tex"
+Package: pgfsys 2020/01/08 v3.1.5b (3.1.5b)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/utilitie
+s\pgfkeys.code.tex"
+\pgfkeys@pathtoks=\toks16
+\pgfkeys@temptoks=\toks17
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/utilitie
+s\pgfkeysfiltered.code.tex"
+\pgfkeys@tmptoks=\toks18
+))
+\pgf@x=\dimen139
+\pgf@y=\dimen140
+\pgf@xa=\dimen141
+\pgf@ya=\dimen142
+\pgf@xb=\dimen143
+\pgf@yb=\dimen144
+\pgf@xc=\dimen145
+\pgf@yc=\dimen146
+\pgf@xd=\dimen147
+\pgf@yd=\dimen148
+\w@pgf@writea=\write3
+\r@pgf@reada=\read2
+\c@pgf@counta=\count175
+\c@pgf@countb=\count176
+\c@pgf@countc=\count177
+\c@pgf@countd=\count178
+\t@pgf@toka=\toks19
+\t@pgf@tokb=\toks20
+\t@pgf@tokc=\toks21
+\pgf@sys@id@count=\count179
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/systemla
+yer\pgf.cfg"
+File: pgf.cfg 2020/01/08 v3.1.5b (3.1.5b)
+)
+Driver file for pgf: pgfsys-pdftex.def
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/systemla
+yer\pgfsys-pdftex.def"
+File: pgfsys-pdftex.def 2020/01/08 v3.1.5b (3.1.5b)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/systemla
+yer\pgfsys-common-pdf.def"
+File: pgfsys-common-pdf.def 2020/01/08 v3.1.5b (3.1.5b)
+)))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/systemla
+yer\pgfsyssoftpath.code.tex"
+File: pgfsyssoftpath.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfsyssoftpath@smallbuffer@items=\count180
+\pgfsyssoftpath@bigbuffer@items=\count181
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/systemla
+yer\pgfsysprotocol.code.tex"
+File: pgfsysprotocol.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/xcolor\xcolor.
+sty"
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/graphics-cfg\c
+olor.cfg"
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcore.code.tex"
+Package: pgfcore 2020/01/08 v3.1.5b (3.1.5b)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+math.code.tex"
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathcalc.code.tex"
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathutil.code.tex")
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathparser.code.tex"
+\pgfmath@dimen=\dimen149
+\pgfmath@count=\count182
+\pgfmath@box=\box46
+\pgfmath@toks=\toks22
+\pgfmath@stack@operand=\toks23
+\pgfmath@stack@operation=\toks24
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathfunctions.code.tex"
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathfunctions.basic.code.tex")
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathfunctions.trigonometric.code.tex")
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathfunctions.random.code.tex")
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathfunctions.comparison.code.tex")
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathfunctions.base.code.tex")
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathfunctions.round.code.tex")
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathfunctions.misc.code.tex")
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathfunctions.integerarithmetics.code.tex")))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+mathfloat.code.tex"
+\c@pgfmathroundto@lastzeros=\count183
+))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/math\pgf
+int.code.tex")
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcorepoints.code.tex"
+File: pgfcorepoints.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@picminx=\dimen150
+\pgf@picmaxx=\dimen151
+\pgf@picminy=\dimen152
+\pgf@picmaxy=\dimen153
+\pgf@pathminx=\dimen154
+\pgf@pathmaxx=\dimen155
+\pgf@pathminy=\dimen156
+\pgf@pathmaxy=\dimen157
+\pgf@xx=\dimen158
+\pgf@xy=\dimen159
+\pgf@yx=\dimen160
+\pgf@yy=\dimen161
+\pgf@zx=\dimen162
+\pgf@zy=\dimen163
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcorepathconstruct.code.tex"
+File: pgfcorepathconstruct.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@path@lastx=\dimen164
+\pgf@path@lasty=\dimen165
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcorepathusage.code.tex"
+File: pgfcorepathusage.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@shorten@end@additional=\dimen166
+\pgf@shorten@start@additional=\dimen167
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcorescopes.code.tex"
+File: pgfcorescopes.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfpic=\box47
+\pgf@hbox=\box48
+\pgf@layerbox@main=\box49
+\pgf@picture@serial@count=\count184
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcoregraphicstate.code.tex"
+File: pgfcoregraphicstate.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgflinewidth=\dimen168
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcoretransformations.code.tex"
+File: pgfcoretransformations.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@pt@x=\dimen169
+\pgf@pt@y=\dimen170
+\pgf@pt@temp=\dimen171
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcorequick.code.tex"
+File: pgfcorequick.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcoreobjects.code.tex"
+File: pgfcoreobjects.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcorepathprocessing.code.tex"
+File: pgfcorepathprocessing.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcorearrows.code.tex"
+File: pgfcorearrows.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfarrowsep=\dimen172
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcoreshade.code.tex"
+File: pgfcoreshade.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@max=\dimen173
+\pgf@sys@shading@range@num=\count185
+\pgf@shadingcount=\count186
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcoreimage.code.tex"
+File: pgfcoreimage.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcoreexternal.code.tex"
+File: pgfcoreexternal.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfexternal@startupbox=\box50
+))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcorelayers.code.tex"
+File: pgfcorelayers.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcoretransparency.code.tex"
+File: pgfcoretransparency.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcorepatterns.code.tex"
+File: pgfcorepatterns.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/basiclay
+er\pgfcorerdf.code.tex"
+File: pgfcorerdf.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/modules\
+pgfmoduleshapes.code.tex"
+File: pgfmoduleshapes.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfnodeparttextbox=\box51
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pgf/modules\
+pgfmoduleplot.code.tex"
+File: pgfmoduleplot.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/pgf/compatibil
+ity\pgfcomp-version-0-65.sty"
+Package: pgfcomp-version-0-65 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@nodesepstart=\dimen174
+\pgf@nodesepend=\dimen175
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/pgf/compatibil
+ity\pgfcomp-version-1-18.sty"
+Package: pgfcomp-version-1-18 2020/01/08 v3.1.5b (3.1.5b)
+))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/tools\verbatim
+.sty"
+Package: verbatim 2019/11/10 v1.5r LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks25
+\verbatim@line=\toks26
+\verbatim@in@stream=\read3
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/environ\enviro
+n.sty"
+Package: environ 2014/05/04 v0.3 A new way to define environments
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/trimspaces\tri
+mspaces.sty"
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+)
+\@envbody=\toks27
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/etoolbox\etool
+box.sty"
+Package: etoolbox 2019/09/21 v2.5h e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count187
+)
+\tcb@titlebox=\box52
+\tcb@upperbox=\box53
+\tcb@lowerbox=\box54
+\tcb@phantombox=\box55
+\c@tcbbreakpart=\count188
+\c@tcblayer=\count189
+\tcolorbox@number=\count190
+\tcb@temp=\box56
+\tcb@temp=\box57
+\tcb@temp=\box58
+\tcb@temp=\box59
+\tcb@out=\write4
+\tcb@record@out=\write5
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/tcolorbox\tcbb
+reakable.code.tex"
+Library (tcolorbox): 'tcbbreakable.code.tex' version '4.22'
+\tcb@testbox=\box60
+\tcb@totalupperbox=\box61
+\tcb@totallowerbox=\box62
+))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/parskip\parski
+p.sty"
+Package: parskip 2020-01-22 v2.0d non-zero parskip adjustments
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/kvoptions\kvop
+tions.sty"
+Package: kvoptions 2019/11/29 v3.13 Key value format for package options (HO)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/ltxcmds\ltxc
+mds.sty"
+Package: ltxcmds 2019/12/15 v1.24 LaTeX kernel commands for general use (HO)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/kvsetkeys\kv
+setkeys.sty"
+Package: kvsetkeys 2019/12/15 v1.18 Key value parser (HO)
+)))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/iftex\iftex.
+sty"
+Package: iftex 2019/11/07 v1.0c TeX engine tests
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/base\fontenc.s
+ty"
+Package: fontenc 2020/01/25 v2.0m Standard LaTeX package
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/psnfss\mathpaz
+o.sty"
+Package: mathpazo 2020/03/25 PSNFSS-v9.3 Palatino w/ Pazo Math (D.Puga, WaS) 
+\symupright=\mathgroup4
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/caption\captio
+n.sty"
+Package: caption 2020/01/03 v3.4h Customizing captions (AR)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/caption\captio
+n3.sty"
+Package: caption3 2020/01/03 v1.8h caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 61.
+\captionmargin=\dimen176
+\captionmargin@=\dimen177
+\captionwidth=\dimen178
+\caption@tempdima=\dimen179
+\caption@indent=\dimen180
+\caption@parindent=\dimen181
+\caption@hangindent=\dimen182
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count191
+\c@continuedfloat=\count192
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/adjustbox\adju
+stbox.sty"
+Package: adjustbox 2019/01/04 v1.2 Adjusting TeX boxes (trim, clip, ...)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/xkeyval\xkeyva
+l.sty"
+Package: xkeyval 2014/12/03 v2.7a package option processing (HA)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/xkeyval\xkey
+val.tex"
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/xkeyval\xkvu
+tils.tex"
+\XKV@toks=\toks28
+\XKV@tempa@toks=\toks29
+)
+\XKV@depth=\count193
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/adjustbox\adjc
+alc.sty"
+Package: adjcalc 2012/05/16 v1.1 Provides advanced setlength with multiple back
+-ends (calc, etex, pgfmath)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/adjustbox\trim
+clip.sty"
+Package: trimclip 2018/04/08 v1.1 Trim and clip general TeX material
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/collectbox\col
+lectbox.sty"
+Package: collectbox 2012/05/17 v0.4b Collect macro arguments as boxes
+\collectedbox=\box63
+)
+\tc@llx=\dimen183
+\tc@lly=\dimen184
+\tc@urx=\dimen185
+\tc@ury=\dimen186
+Package trimclip Info: Using driver 'tc-pdftex.def'.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/adjustbox\tc-p
+dftex.def"
+File: tc-pdftex.def 2019/01/04 v2.2 Clipping driver for pdftex
+))
+\adjbox@Width=\dimen187
+\adjbox@Height=\dimen188
+\adjbox@Depth=\dimen189
+\adjbox@Totalheight=\dimen190
+\adjbox@pwidth=\dimen191
+\adjbox@pheight=\dimen192
+\adjbox@pdepth=\dimen193
+\adjbox@ptotalheight=\dimen194
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/ifoddpage\ifod
+dpage.sty"
+Package: ifoddpage 2016/04/23 v1.1 Conditionals for odd/even page detection
+\c@checkoddpage=\count194
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/varwidth\varwi
+dth.sty"
+Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
+\@vwid@box=\box64
+\sift@deathcycles=\count195
+\@vwid@loff=\dimen195
+\@vwid@roff=\dimen196
+))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/float\float.st
+y"
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count196
+\float@exts=\toks30
+\float@box=\box65
+\@float@everytoks=\toks31
+\@floatcapt=\box66
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/tools\enumerat
+e.sty"
+Package: enumerate 2015/07/23 v3.00 enumerate extensions (DPC)
+\@enLab=\toks32
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/geometry\geome
+try.sty"
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/iftex\ifvtex
+.sty"
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+)
+\Gm@cnth=\count197
+\Gm@cntv=\count198
+\c@Gm@tempcnt=\count199
+\Gm@bindingoffset=\dimen197
+\Gm@wd@mp=\dimen198
+\Gm@odd@mp=\dimen199
+\Gm@even@mp=\dimen256
+\Gm@layoutwidth=\dimen257
+\Gm@layoutheight=\dimen258
+\Gm@layouthoffset=\dimen259
+\Gm@layoutvoffset=\dimen260
+\Gm@dimlist=\toks33
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/geometry\geome
+try.cfg"))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/amsmath\amsmat
+h.sty"
+Package: amsmath 2020/01/20 v2.17e AMS math features
+\@mathmargin=\skip49
+
+For additional information on amsmath, use the `?' option.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/amsmath\amstex
+t.sty"
+Package: amstext 2000/06/29 v2.01 AMS text
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/amsmath\amsgen
+.sty"
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks34
+\ex@=\dimen261
+))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/amsmath\amsbsy
+.sty"
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen262
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/amsmath\amsopn
+.sty"
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count266
+LaTeX Info: Redefining \frac on input line 227.
+\uproot@=\count267
+\leftroot@=\count268
+LaTeX Info: Redefining \overline on input line 389.
+\classnum@=\count269
+\DOTSCASE@=\count270
+LaTeX Info: Redefining \ldots on input line 486.
+LaTeX Info: Redefining \dots on input line 489.
+LaTeX Info: Redefining \cdots on input line 610.
+\Mathstrutbox@=\box67
+\strutbox@=\box68
+\big@size=\dimen263
+LaTeX Font Info:    Redeclaring font encoding OML on input line 733.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
+\macc@depth=\count271
+\c@MaxMatrixCols=\count272
+\dotsspace@=\muskip16
+\c@parentequation=\count273
+\dspbrk@lvl=\count274
+\tag@help=\toks35
+\row@=\count275
+\column@=\count276
+\maxfields@=\count277
+\andhelp@=\toks36
+\eqnshift@=\dimen264
+\alignsep@=\dimen265
+\tagshift@=\dimen266
+\tagwidth@=\dimen267
+\totwidth@=\dimen268
+\lineht@=\dimen269
+\@envbody=\toks37
+\multlinegap=\skip50
+\multlinetaggap=\skip51
+\mathdisplay@stack=\toks38
+LaTeX Info: Redefining \[ on input line 2859.
+LaTeX Info: Redefining \] on input line 2860.
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/amsfonts\amssy
+mb.sty"
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/amsfonts\amsfo
+nts.sty"
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup5
+\symAMSb=\mathgroup6
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/base\textcomp.
+sty"
+Package: textcomp 2020/02/02 v2.0m Standard LaTeX package
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/upquote\upquot
+e.sty"
+Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
+tim
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/eurosym\eurosy
+m.sty"
+Package: eurosym 1998/08/06 v1.1 European currency symbol ``Euro''
+\@eurobox=\box69
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/ucs\ucs.sty"
+Package: ucs 2013/05/11 v2.2 UCS: Unicode input support
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/ucs\uni-global
+.def"
+File: uni-global.def 2013/05/13 UCS: Unicode global data
+)
+\uc@secondtry=\count278
+\uc@combtoks=\toks39
+\uc@combtoksb=\toks40
+\uc@temptokena=\toks41
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/fancyvrb\fancy
+vrb.sty"
+Package: fancyvrb 2020/01/13 v3.5 verbatim text (tvz,hv)
+\FV@CodeLineNo=\count279
+\FV@InFile=\read4
+\FV@TabBox=\box70
+\c@FancyVerbLine=\count280
+\FV@StepNumber=\count281
+\FV@OutFile=\write6
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/grffile\grffil
+e.sty"
+Package: grffile 2019/11/11 v2.1 Extended file name support for graphics (legac
+y)
+Package grffile Info: This package is an empty stub for compatibility on input 
+line 40.
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/hyperref\hyper
+ref.sty"
+Package: hyperref 2020/01/14 v7.00d Hypertext links for LaTeX
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/pdftexcmds\pdf
+texcmds.sty"
+Package: pdftexcmds 2019/11/24 v0.31 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/infwarerr\in
+fwarerr.sty"
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/kvdefinekeys
+\kvdefinekeys.sty"
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/pdfescape\pd
+fescape.sty"
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/hycolor\hycolo
+r.sty"
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/letltxmacro\le
+tltxmacro.sty"
+Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/auxhook\auxhoo
+k.sty"
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+)
+\@linkdim=\dimen270
+\Hy@linkcounter=\count282
+\Hy@pagecounter=\count283
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/hyperref\pd1en
+c.def"
+File: pd1enc.def 2020/01/14 v7.00d Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/intcalc\intc
+alc.sty"
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/etexcmds\ete
+xcmds.sty"
+Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
+)
+\Hy@SavedSpaceFactor=\count284
+Package hyperref Info: Hyper figures OFF on input line 4547.
+Package hyperref Info: Link nesting OFF on input line 4552.
+Package hyperref Info: Hyper index ON on input line 4555.
+Package hyperref Info: Plain pages OFF on input line 4562.
+Package hyperref Info: Backreferencing OFF on input line 4567.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4800.
+\c@Hy@tempcnt=\count285
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/url\url.sty"
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 5159.
+\XeTeXLinkMargin=\dimen271
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/bitset\bitse
+t.sty"
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/bigintcalc\b
+igintcalc.sty"
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
+)
+))
+\Fld@menulength=\count286
+\Field@Width=\dimen272
+\Fld@charsize=\dimen273
+Package hyperref Info: Hyper figures OFF on input line 6430.
+Package hyperref Info: Link nesting OFF on input line 6435.
+Package hyperref Info: Hyper index ON on input line 6438.
+Package hyperref Info: backreferencing OFF on input line 6445.
+Package hyperref Info: Link coloring OFF on input line 6450.
+Package hyperref Info: Link coloring with OCG OFF on input line 6455.
+Package hyperref Info: PDF/A mode OFF on input line 6460.
+LaTeX Info: Redefining \ref on input line 6500.
+LaTeX Info: Redefining \pageref on input line 6504.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/atbegshi\atb
+egshi.sty"
+Package: atbegshi 2019/12/05 v1.19 At begin shipout hook (HO)
+)
+\Hy@abspage=\count287
+\c@Item=\count288
+\c@Hfootnote=\count289
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/hyperref\hpdft
+ex.def"
+File: hpdftex.def 2020/01/14 v7.00d Hyperref driver for pdfTeX
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/atveryend\atve
+ryend.sty"
+Package: atveryend 2019-12-11 v1.11 Hooks at the very end of document (HO)
+)
+\Fld@listcount=\count290
+\c@bookmark@seq@number=\count291
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/rerunfilecheck
+\rerunfilecheck.sty"
+Package: rerunfilecheck 2019/12/05 v1.9 Rerun checks for auxiliary files (HO)
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/uniquecounte
+r\uniquecounter.sty"
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+86.
+)
+\Hy@SectionHShift=\skip52
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/titling\titlin
+g.sty"
+Package: titling 2009/09/04 v2.1d maketitle typesetting
+\thanksmarkwidth=\skip53
+\thanksmargin=\skip54
+\droptitle=\skip55
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/tools\longtabl
+e.sty"
+Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
+\LTleft=\skip56
+\LTright=\skip57
+\LTpre=\skip58
+\LTpost=\skip59
+\LTchunksize=\count292
+\LTcapwidth=\dimen274
+\LT@head=\box71
+\LT@firsthead=\box72
+\LT@foot=\box73
+\LT@lastfoot=\box74
+\LT@cols=\count293
+\LT@rows=\count294
+\c@LT@tables=\count295
+\c@LT@chunks=\count296
+\LT@p@ftn=\toks42
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/booktabs\bookt
+abs.sty"
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen275
+\lightrulewidth=\dimen276
+\cmidrulewidth=\dimen277
+\belowrulesep=\dimen278
+\belowbottomsep=\dimen279
+\aboverulesep=\dimen280
+\abovetopsep=\dimen281
+\cmidrulesep=\dimen282
+\cmidrulekern=\dimen283
+\defaultaddspace=\dimen284
+\@cmidla=\count297
+\@cmidlb=\count298
+\@aboverulesep=\dimen285
+\@belowrulesep=\dimen286
+\@thisruleclass=\count299
+\@lastruleclass=\count300
+\@thisrulewidth=\dimen287
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/enumitem\enumi
+tem.sty"
+Package: enumitem 2019/06/20 v3.9 Customized lists
+\labelindent=\skip60
+\enit@outerparindent=\dimen288
+\enit@toks=\toks43
+\enit@inbox=\box75
+\enit@count@id=\count301
+\enitdp@description=\count302
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/ulem\ulem.sty"
+\UL@box=\box76
+\UL@hyphenbox=\box77
+\UL@skip=\skip61
+\UL@hook=\toks44
+\UL@height=\dimen289
+\UL@pe=\count303
+\UL@pixel=\dimen290
+\ULC@box=\box78
+Package: ulem 2019/11/18
+\ULdepth=\dimen291
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/jknappen\mathr
+sfs.sty"
+Package: mathrsfs 1996/01/01 Math RSFS package v1.0 (jk)
+\symrsfs=\mathgroup7
+)
+\Wrappedcontinuationbox=\box79
+\Wrappedvisiblespacebox=\box80
+Package hyperref Info: Option `breaklinks' set `true' on input line 360.
+Package hyperref Info: Option `colorlinks' set `true' on input line 360.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/l3backend\l3ba
+ckend-pdfmode.def"
+File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count304
+\l__pdf_internal_box=\box81
+) (janakparajuli_api_request_deckgl.aux
+
+LaTeX Warning: Label `fig:workflow' multiply defined.
+
+)
+\openout1 = `janakparajuli_api_request_deckgl.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 367.
+LaTeX Font Info:    ... okay on input line 367.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 367.
+LaTeX Font Info:    ... okay on input line 367.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 367.
+LaTeX Font Info:    ... okay on input line 367.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 367.
+LaTeX Font Info:    ... okay on input line 367.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 367.
+LaTeX Font Info:    ... okay on input line 367.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 367.
+LaTeX Font Info:    ... okay on input line 367.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 367.
+LaTeX Font Info:    ... okay on input line 367.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 367.
+LaTeX Font Info:    ... okay on input line 367.
+LaTeX Font Info:    Trying to load font information for T1+ppl on input line 36
+7.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/psnfss\t1ppl.f
+d"
+File: t1ppl.fd 2001/06/04 font definitions for T1/ppl.
+) ABD: EveryShipout initializing macros
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/context/base/mkii\su
+pp-pdf.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count305
+\scratchdimen=\dimen292
+\scratchbox=\box82
+\nofMPsegments=\count306
+\nofMParguments=\count307
+\everyMPshowfont=\toks45
+\MPscratchCnt=\count308
+\MPscratchDim=\dimen293
+\MPnumerator=\count309
+\makeMPintoPDFobject=\count310
+\everyMPtoPDFconversion=\toks46
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/epstopdf-pkg\e
+pstopdf-base.sty"
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: float package is loaded.
+Package caption Info: hyperref package is loaded.
+Package caption Info: longtable package is loaded.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/caption\ltcapt
+ion.sty"
+Package: ltcaption 2018/08/26 v1.4a longtable captions (AR)
+)
+Package caption Info: End \AtBeginDocument code.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(72.26999pt, 469.75502pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 650.43001pt, 72.26999pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=469.75502pt
+* \textheight=650.43001pt
+* \oddsidemargin=0.0pt
+* \evensidemargin=0.0pt
+* \topmargin=-37.0pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=11.0pt
+* \footskip=30.0pt
+* \marginparwidth=59.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/ucs\ucsencs.de
+f"
+File: ucsencs.def 2011/01/21 Fixes to fontencodings LGR, T3
+)
+\AtBeginShipoutBox=\box83
+Package hyperref Info: Link coloring ON on input line 367.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/hyperref\namer
+ef.sty"
+Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/refcount\refco
+unt.sty"
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+)
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/generic/gettitlestri
+ng\gettitlestring.sty"
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+)
+\c@section@level=\count311
+)
+LaTeX Info: Redefining \ref on input line 367.
+LaTeX Info: Redefining \pageref on input line 367.
+LaTeX Info: Redefining \nameref on input line 367.
+ (janakparajuli_api_request_deckgl.out)
+(janakparajuli_api_request_deckgl.out)
+\@outlinefile=\write7
+\openout7 = `janakparajuli_api_request_deckgl.out'.
+
+LaTeX Font Info:    Trying to load font information for OT1+ppl on input line 3
+69.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/psnfss\ot1ppl.
+fd"
+File: ot1ppl.fd 2001/06/04 font definitions for OT1/ppl.
+)
+LaTeX Font Info:    Trying to load font information for OML+zplm on input line 
+369.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/psnfss\omlzplm
+.fd"
+File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
+)
+LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 
+369.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/psnfss\omszplm
+.fd"
+File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
+)
+LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 
+369.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/psnfss\omxzplm
+.fd"
+File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
+)
+LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 
+369.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/psnfss\ot1zplm
+.fd"
+File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
+)
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 12.50409pt on input line 369.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 9.37807pt on input line 369.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 7.29405pt on input line 369.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 12.50409pt on input line 369.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 9.37807pt on input line 369.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 7.29405pt on input line 369.
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 36
+9.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/jknappen\ursfs
+.fd"
+File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
+)
+
+LaTeX Warning: No \author given.
+
+LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 3
+84.
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/base\t1cmtt.fd
+"
+File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 6.25204pt on input line 385.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 5.21004pt on input line 385.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 6.25204pt on input line 385.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 5.21004pt on input line 385.
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 386.
+LaTeX Font Info:    Trying to load font information for TS1+cmtt on input line 
+389.
+
+("C:\Users\janak\OneDrive - Universitat Jaume I\Miktex\tex/latex/base\ts1cmtt.f
+d"
+File: ts1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
+) [1
+
+{C:/Users/janak/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+[2] [3] [4] [5]
+<output_8_1.png, id=57, 2501.345pt x 2759.30875pt>
+File: output_8_1.png Graphic file (type png)
+<use output_8_1.png>
+Package pdftex.def Info: output_8_1.png  used on input line 653.
+(pdftex.def)             Requested size: 2501.33893pt x 2759.30205pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 655--656
+
+ []
+
+[6 <./output_8_1.png>]
+<output_10_1.png, id=65, 616.3025pt x 327.2225pt>
+File: output_10_1.png Graphic file (type png)
+<use output_10_1.png>
+Package pdftex.def Info: output_10_1.png  used on input line 682.
+(pdftex.def)             Requested size: 616.301pt x 327.2217pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 684--685
+
+ []
+
+<output_11_1.png, id=66, 1168.365pt x 374.39874pt>
+File: output_11_1.png Graphic file (type png)
+<use output_11_1.png>
+Package pdftex.def Info: output_11_1.png  used on input line 705.
+(pdftex.def)             Requested size: 1168.36215pt x 374.39783pt.
+[7 <./output_10_1.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 707--708
+
+ []
+
+<output_12_1.png, id=73, 1174.3875pt x 374.39874pt>
+File: output_12_1.png Graphic file (type png)
+<use output_12_1.png>
+Package pdftex.def Info: output_12_1.png  used on input line 727.
+(pdftex.def)             Requested size: 1174.38464pt x 374.39783pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 729--730
+
+ []
+
+<output_13_1.png, id=74, 1189.44376pt x 414.54875pt>
+File: output_13_1.png Graphic file (type png)
+<use output_13_1.png>
+Package pdftex.def Info: output_13_1.png  used on input line 754.
+(pdftex.def)             Requested size: 1189.44086pt x 414.54773pt.
+[8 <./output_11_1.png> <./output_12_1.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 756--757
+
+ []
+
+<folium.jpg, id=81, 712.91344pt x 393.72093pt>
+File: folium.jpg Graphic file (type jpg)
+<use folium.jpg>
+Package pdftex.def Info: folium.jpg  used on input line 794.
+(pdftex.def)             Requested size: 712.9117pt x 393.71997pt.
+[9 <./output_13_1.png>] [10 <./folium.jpg>] [11]
+<pydeck.jpg, id=100, 749.80125pt x 405.01312pt>
+File: pydeck.jpg Graphic file (type jpg)
+<use pydeck.jpg>
+Package pdftex.def Info: pydeck.jpg  used on input line 892.
+(pdftex.def)             Requested size: 749.79942pt x 405.01212pt.
+ [12 <./pydeck.jpg>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 906.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 906.
+
+(janakparajuli_api_request_deckgl.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 906.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 906.
+Package rerunfilecheck Info: File `janakparajuli_api_request_deckgl.out' has no
+t changed.
+(rerunfilecheck)             Checksum: D5288AAA5876793AE7475062E72A6302;340.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 21056 strings out of 481565
+ 392927 string characters out of 2912320
+ 954491 words of memory out of 3000000
+ 35804 multiletter control sequences out of 15000+200000
+ 560852 words of font info for 92 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 59i,7n,77p,1265b,611s stack positions out of 5000i,500n,10000p,200000b,50000s
+ <C:\Users\janak\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\
+tctt1095.pk> <C:\Users\janak\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/
+ec/dpi600\tcit1095.pk> <C:\Users\janak\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour
+/jknappen/ec/dpi600\ecit1095.pk> <C:\Users\janak\AppData\Local\MiKTeX\2.9\fonts
+/pk/ljfour/jknappen/ec/dpi600\ectt1095.pk>{C:/Users/janak/OneDrive - Universita
+t Jaume I/Miktex/fonts/enc/dvips/base/8r.enc}<C:/Users/janak/OneDrive - Univers
+itat Jaume I/Miktex/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/janak/O
+neDrive - Universitat Jaume I/Miktex/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+<C:/Users/janak/OneDrive - Universitat Jaume I/Miktex/fonts/type1/urw/palatino/
+uplb8a.pfb><C:/Users/janak/OneDrive - Universitat Jaume I/Miktex/fonts/type1/ur
+w/palatino/uplr8a.pfb>
+Output written on janakparajuli_api_request_deckgl.pdf (12 pages, 509022 bytes)
+.
+PDF statistics:
+ 281 PDF objects out of 1000 (max. 8388607)
+ 25 named destinations out of 1000 (max. 500000)
+ 88 words of extra memory for PDF output out of 10000 (max. 10000000)
+
