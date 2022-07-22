@@ -20,13 +20,19 @@ class BboxSelector:
         return { 'bbox': f'{self.min_x},{self.min_y},{self.max_x},{self.max_y}' }
 
 class TimeSelector:
-    def __init__(self, start_time, end_time):
+    def __init__(self, start_time=None, end_time=None):
         self.start_time = start_time
         self.end_time = end_time
 
     @property
     def param(self):
-        return { 'after': f'{self.start_time}' } # TODO
+        if self.start_time and self.end_time==None:
+            return { 'after': f'{self.start_time}' }
+        elif self.start_time==None and self.end_time:
+            return { 'before': f'{self.end_time}' }
+        elif self.start_time and self.end_time:
+            return { 'during': f'{self.start_time},{self.end_time}' }
+
 
 class RequestParam:
     def __init__(self, path: str, method="GET", headers=None, params=None):

@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 # loading requirements
 requirements = list(parse_requirements('requirements.txt', session='hack'))
-requirements = [r.name for r in requirements]
+requirements = [r.requirement for r in requirements]
 
 
 def parse_long_description():
@@ -18,7 +18,7 @@ setup(
         "": ["*.txt"]
     },
     include_package_data=True,
-    version="0.0.2",
+    version="0.0.3",
     description="Python Utilities for enviroCar",
     long_description=parse_long_description(),
     long_description_content_type="text/markdown",
