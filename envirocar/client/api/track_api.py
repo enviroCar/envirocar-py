@@ -88,7 +88,7 @@ def _parse_tracks_list_df(tracks_jsons):
             ec_data = json.loads(tracks_json)
             df = pd.json_normalize(ec_data, 'tracks')
             df.rename(columns=__rename_track_columns, inplace=True)
-            tracks_meta_df = tracks_meta_df.append(df)
+            tracks_meta_df = pd.concat([tracks_meta_df, df])
 
     return tracks_meta_df
 
@@ -109,7 +109,7 @@ def _parse_track_df(track_jsons):
 
         # combine dataframes
         car_df = pd.concat([car_df]*len(track_df.index), ignore_index=True)
-        tracks_df = tracks_df.append(track_df.join(car_df))
+        tracks_df = pd.concat([tracks_df, track_df.join(car_df)])
 
     return tracks_df
 
